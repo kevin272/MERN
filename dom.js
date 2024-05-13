@@ -18,3 +18,16 @@ setInterval(()=>{
     document.getElementById('clock').innerHTML= hour+":"+minute+":"+second
 
 },1000)
+
+const increaseCounter=() => {
+    counter++;
+    document.querySelector("#counter").innerHtml= counter;
+}
+
+window.addEventListener('DOMContentLoaded',()=>
+{
+    const btn =document.querySelector("#counter");
+    console.log(btn)
+    document.on("click",(e)=>
+    {console.log(e)})
+})
