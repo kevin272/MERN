@@ -9,4 +9,11 @@
 - Local Repository
 ### Git commit
 -git commit "Name"
-### PAPPU
+### CLASS AND OBJECT
+Class is the same as of OOP
+for object we use -new "ObjectName"
+There are 2 data types Public and private
+public name
+private #
+### INHERITANCe
+Use extends for applying inheritance
