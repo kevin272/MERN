@@ -15,5 +15,9 @@ for object we use -new "ObjectName"
 There are 2 data types Public and private
 public name
 private #
-### INHERITANCe
+### INHERITANCE
 Use extends for applying inheritance
+Use Super to execute parent constructor
+super()
+### Import and Export
+Use require('') for import
