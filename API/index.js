@@ -1,7 +1,7 @@
 const http=require("http")
 
-const server= http.createServer((req,res)=>
-{res.end("Hello World")})
+const app= require(".src/config/express.config")
+const server= http.createServer(app)
 
 server.listen(9005,'127.0.0.1',(error)=>
 {
