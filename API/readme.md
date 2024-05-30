@@ -70,3 +70,24 @@
 # f. Review and Rating
 # g. Offers and coupons
 # h. Logistic
+
+## CRUD OPERATION
+-> Methods
+C = CREATE => post method
+R = Read => get method
+U = Update => put/patch method
+D = Delete => delete method
+
+## Auth and Authorization
+=> Register
+   => Data entry => FORM (React view)
+     => Submit
+       => BE/API caller
+ 
+=> Login
+ => Login View(FORM login, react)
+    => Data entry (FORM action, react)
+      => API call (BE call)
+        => post method
+
+## RES = Output REQ = INPUT
