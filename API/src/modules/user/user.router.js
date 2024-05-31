@@ -1,50 +1,28 @@
 const express = require('express');
 const router = express.Router();
-
-const loginCheck = (req, res, next) => {
-    // Middleware logic
-    next();
+const userCtrl = require ("./user.controller")
+const LoginCheck = (req, res, next) => {
+    let user = {}
+    if (user){
+    next();}
+    else {
+    next ({status: 401, message:"Login Required"})}
 };
+const hasPermission = (req,res,next) => {
+    next()
+}
+
+router.use (LoginCheck)
 
 // Define routes
 router.route('/')
-    .post((req, res) => {
-        res.json({
-            result: null,
-            message: "User created",
-            meta: null
-        });
-    })
-    .get((req, res) => {
-        res.json({
-            result: null,
-            message: "List all users",
-            meta: null
-        });
-    });
+    .post(userCtrl.userCreate)
+    .get(userCtrl.UserDetail)
 
 // Define routes with parameters
 router.route('/:id')
-    .get((req, res) => {
-        res.json({
-            result: null,
-            message: `User Detail of ${req.params.id}`,
-            meta: null
-        });
-    })
-    .put((req, res) => {
-        res.json({
-            result: null,
-            message: `User Update of ${req.params.id}`,
-            meta: null
-        });
-    })
-    .delete((req, res) => {
-        res.json({
-            result: null,
-            message: `User Delete of ${req.params.id}`,
-            meta: null
-        });
-    });
+    .get(userCtrl.UserDetailByID)
+    .put(userCtrl.UserUpdateByID)
+    .delete(userCtrl.UserDeleteByID)
 
 module.exports = router;
