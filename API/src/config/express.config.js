@@ -2,6 +2,12 @@ const express= require('express')
 const router = require ("./router.config")
 
 const app= express();
+
+//parsers
+app.use(express.json(),express.urlencoded())  //json content parser and URL encoded parser
+
+
+//router mounting point
 app.use(router)
 
 app.use ((req,res,next) => 

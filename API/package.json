@@ -11,6 +11,7 @@
   "license": "ISC",
   "description": "=model \r   -data mapping\r   -data store\r   -data definition\r -View\r   -Presentation\r -Controller\r   -9.8 m/s2 => Acc due to g => 98m/s2",
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1"
   }
 }

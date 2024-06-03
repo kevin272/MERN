@@ -1,13 +1,14 @@
 
 class UserController{
-    userCreate =((req, res) => {
+    userCreate =((req, res,next) => {
+        const data = req.body;
         res.json({
-            result: null,
+            result: data,
             message: "User created",
             meta: null
         });})
     
-    UserDetail =((req, res) => {
+    UserDetail =((req, res,next) => {
         res.json({
             result: null,
             message: "List all users",
@@ -15,7 +16,7 @@ class UserController{
         });
     });
 
-    UserDetailByID = ((req, res) => {
+    UserDetailByID = ((req, res,next) => {
         res.json({
             result: null,
             message: `User Detail of ${req.params.id}`,
@@ -23,7 +24,7 @@ class UserController{
         });
     })
 
-    UserUpdateByID = ((req, res) => {
+    UserUpdateByID = ((req, res,next) => {
         res.json({
             result: null,
             message: `User Update of ${req.params.id}`,
@@ -31,7 +32,7 @@ class UserController{
         });
     })
 
-    UserDeleteByID = ((req, res) => {
+    UserDeleteByID = ((req, res,next) => {
         res.json({
             result: null,
             message: `User Delete of ${req.params.id}`,
