@@ -1,27 +1,41 @@
-const express = require('express');
-const router = express.Router();
-const userCtrl = require("./user.controller");
-const LoginCheck = require("../../middlewares/auth.middleware");
-const hasPermission = require("../../middlewares/rbac.middleware");
+const router = require('express').Router();
+const { userCreateDTO } = require('./user.request');
+const { loginCheck } = require('../../middlewares/auth.middleware');
+const { hasPermission } = require('../../middlewares/rbac.miiddleware');
 
-//ToDo:Cleanup and Optimize
-const multer = require("multer")
-const uploader = multer({
-    dest: "../../public"
-})
+// set path middleware
+const { setPath } = require('../../middlewares/uploader.middleware');
 
-// Apply LoginCheck middleware globally
-router.use(LoginCheck);
+// importing user controller object
+const userController = require('./user.controller');
+const { bodyValidator } = require('../../middlewares/validator.middleware');
 
-// Define routes
-router.route('/')
-    .post(hasPermission,uploader.array('coverPic'),uploader.single("profile"), userCtrl.userCreate)
-    .get(userCtrl.UserDetail);
 
-// Define routes with parameters
-router.route('/:id')
-    .get(userCtrl.UserDetailByID)
-    .put(userCtrl.UserUpdateByID)
-    .delete(userCtrl.UserDeleteByID);
+
+
+
+
+
+
+
+
+
+
+// router uses logincheck for all the routes
+router.use(loginCheck);
+// creating routes for user
+
+
+
+
+    router.route('/')
+    .get(hasPermission,setPath('user'),userController.userLists)
+    .post(hasPermission,bodyValidator(userCreateDTO),userController.userCreate);
+
+  router.route('/:id')
+    .get(userController.userDetailById)
+    .put(userController.userUpdate)
+    .delete(userController.userRemove);
+
 
 module.exports = router;

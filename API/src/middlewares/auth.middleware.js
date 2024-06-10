@@ -1,8 +1,10 @@
-const LoginCheck = (req, res, next) => {
-    let user = {}
-    if (user){
-    next();}
-    else {
-    next ({status: 401, message:"Login Required"})}
-};
-module.exports = LoginCheck;
+// creating middlewares for user 
+const loginCheck = (req,res,next) => {
+    console.log('login check middleware');
+    next();
+}
+
+module.exports = {
+    loginCheck
+}
+

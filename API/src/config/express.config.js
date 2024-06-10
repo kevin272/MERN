@@ -1,33 +1,47 @@
-const express= require('express')
-const router = require ("./router.config")
-
-const app= express();
-
-//parsers
-app.use(express.json(),express.urlencoded())  //json content parser and URL encoded parser
+const express = require ('express');
+const app = express();
+var morgan = require('morgan')
 
 
-//router mounting point
+// importing router config
+const router = require('./router.config');
+
+
+
+app.use(express.json());
+app.use(morgan('dev'));
+app.use(express.urlencoded({extended:true}));
+app.use(express.static('public'));
+app.use(express.static('uploads'));
+
+
+// router mounting point
 app.use(router)
 
-app.use ((req,res,next) => 
-{
-    next({status:404,message: "Resource Not Found"})
-})
 
-app.use((error,req,res,next) => 
-    {
-        let statusCode = error.status || 500;
-        let message = error.message || "Server Error";
-        let detail = error.detail || null;
+// 404 middleware
+app.use((req, res, next) => {
+   next({
+       statusCode: 404,
+       message: `Resource not found`,
+       detail: null
+    });
+});
 
-        res.status (statusCode).json(
-            {
-                result: detail,
-                message: message,
-                meta: null
-            }
-        )
-    })
+// error handling middleware
+app.use((err, req, res, next) => {
+    let statusCode = err.statusCode || 500;
+    let message = err.message || 'Internal Server Error';
+    let detail= err.detail || null;
+    
+    res.status(statusCode).json({
+        result:detail,
+        message:message,
+        meta:null
+    });
 
+});
+
+
+// exporting express application
 module.exports = app;
