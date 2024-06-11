@@ -10,6 +10,9 @@ const { setPath } = require('../../middlewares/uploader.middleware');
 const userController = require('./user.controller');
 const { bodyValidator } = require('../../middlewares/validator.middleware');
 
+// getting fileUploader middleware
+const {uploadFile}= require('../../middlewares/uploader.middleware')
+
 
 
 
@@ -29,8 +32,8 @@ router.use(loginCheck);
 
 
     router.route('/')
-    .get(hasPermission,setPath('user'),userController.userLists)
-    .post(hasPermission,bodyValidator(userCreateDTO),userController.userCreate);
+    .get(hasPermission,userController.userLists)
+    .post(hasPermission,bodyValidator(userCreateDTO),setPath('user'),uploadFile().single('profile'),userController.userCreate);
 
   router.route('/:id')
     .get(userController.userDetailById)
