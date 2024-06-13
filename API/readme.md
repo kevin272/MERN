@@ -91,3 +91,18 @@ D = Delete => delete method
         => post method
 
 ## RES = Output REQ = INPUT
+
+
+## MONGODB
+admin - Dvlkvn
+pw- fBP9yiTHDSQu9giE
+
+## Content
+db.users.insertOne / insertMany()
+db.users.deleteOne / deleteMany()
+db.users.find / findOne()
+
+- Core development
+- ORM/ODM implementation
+
+MVC

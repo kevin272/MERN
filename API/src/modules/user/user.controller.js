@@ -44,7 +44,7 @@ data.activateToken = randomStringGenerator(20);
 data.status = 'inactive';
 
 await mailService.sendMail({
-    to: "24.student.Tiwari@broadwayinfosys.edu.np@gmail.com",
+    to: "24.student.kebinmalla@broadwayinfosys.edu.np",
     sub: 'User Created',
     message:`
     Dear ${data.name},<br>

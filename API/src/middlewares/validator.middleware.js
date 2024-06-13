@@ -12,7 +12,7 @@ const bodyValidator =(schema)=>{
 
             //single file
             if(req.file){
-                data[req.file.field] = req.file.filename;   // dynamic key value pair
+                data[req.file.fieldname] = req.file.filename;   // dynamic key value pair
             }else if (req.files)  //multiple files
                 {       
                 // [{},{},{}]
