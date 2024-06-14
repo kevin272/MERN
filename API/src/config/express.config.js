@@ -2,6 +2,7 @@ const express = require ('express');
 const app = express();
 var morgan = require('morgan')
 
+require("./db.config")
 
 // importing router config
 const router = require('./router.config');

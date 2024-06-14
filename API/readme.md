@@ -1,13 +1,13 @@
 # Architecture
 ## MVC Pattern
--model 
-  -data mapping
-  -data store
-  -data definition
--View
-  -Presentation
--Controller
-  -9.8 m/s2 => Acc due to g => 98m/s2
+- model 
+  - data mapping
+  - data store
+  - data definition
+- View
+  - Presentation
+- Controller
+  - 9.8 m/s2 => Acc due to g => 98m/s2
 
 
   # Architecture
@@ -37,35 +37,36 @@
           CRUD operation => Create, Read , Update , Delete
 
 # a. Authentication and Authorization
- -login 
- -signup
- -activation
- -forgot password
- -logout
- -dashboard
+ - login 
+ - signup
+ - activation
+ - forgot password
+ - logout
+ - dashboard
+ - RBAC
 
 # b. Product
-  -CRUD Operation
-  -Product List
-      -Search
-      -Category
-      -Brand
-  -Add to cart
-  -Wishlist
-  -Order
+  - CRUD Operation
+  - Product List
+      - Search
+      - Category
+      - Brand
+  - Add to cart
+  - Wishlist
+  - Order
 
 # c.Category
-  -CRUD Operation
-  -Category List
-  -Category Detail (Product List -Category)
+  - CRUD Operation
+  - Category List
+  - Category Detail (Product List -Category)
 
 # d. Brand
-  -CRUD Operation
-  -Brand List
-  -Brand Detail (Product List - Brand)
+  - CRUD Operation
+  - Brand List
+  - Brand Detail (Product List - Brand)
 
 # e. Payment Gateway
-  -COD
+  - COD
 
 # f. Review and Rating
 # g. Offers and coupons
@@ -105,4 +106,20 @@ db.users.find / findOne()
 - Core development
 - ORM/ODM implementation
 
+
 MVC
+M = Model
+Collection/table
+    table name plural
+    Model name singular
+    for e.g
+        users => table name
+        User => User model
+
+{key: value}
+collection keys or table column
+===> the properties of a model
+
+User model => userObj() => keys
+
+Every object of a model class is a row/document of a table/collection
