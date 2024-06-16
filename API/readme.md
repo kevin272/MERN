@@ -123,3 +123,11 @@ collection keys or table column
 User model => userObj() => keys
 
 Every object of a model class is a row/document of a table/collection
+
+### ER DIAGRAM
+ use https://dbdiagram.io/d/666afd7ea179551be6cfebc4
+
+### Creating Models 
+
+For details about mongoose 
+use mongoosejs.com
