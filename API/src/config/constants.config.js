@@ -5,17 +5,19 @@ const fileFilterType = {
     AUDIO:'audio'
 }
 
-const UserRoles = {
-    ADMIN : "admin",
-    CUSTOMER : "customer",
-    SELLER: "seller"
+const userRoles = {
+    ADMIN: 'admin',
+    CUSTOMER: 'customer',
+    SELLER: 'seller',
 }
 
-const StatusType ={
-    ACTIVE: "active",
-    INACTIVE: "inactive",
+const statusType ={
+    ACTIVE:'active',
+    INACTIVE:'inactive'
 }
 
 module.exports = {
-    fileFilterType
+    fileFilterType,
+    userRoles,
+    statusType
 }

@@ -95,8 +95,9 @@ D = Delete => delete method
 
 
 ## MONGODB
-admin - Dvlkvn
-pw- fBP9yiTHDSQu9giE
+ Dvlkvn
+ 
+fBP9yiTHDSQu9giE
 
 ## Content
 db.users.insertOne / insertMany()

@@ -33,7 +33,7 @@ router.use(loginCheck);
 
     router.route('/')
     .get(hasPermission,userController.userLists)
-    .post(hasPermission,bodyValidator(userCreateDTO),setPath('user'),uploadFile().single('profile'),userController.userCreate);
+    .post(hasPermission,setPath('user'),uploadFile().single('profile'),bodyValidator(userCreateDTO),userController.userCreate);
 
   router.route('/:id')
     .get(userController.userDetailById)

@@ -1,13 +1,15 @@
 const bcrypt = require('bcryptjs');
 const mailService = require('../../services/mail.service');
-const { randomStringGenerator } = require('../../utils/helper');
+const { randomStringGenerator, deleteFile } = require('../../utils/helper');
+const UserModel = require('./user.model');
 
 
 class UserService {
 
 transformUserCreate = (req)=>{
     const data = req.body;   // name , email, password,confirmpassword, address, phone
-
+    console.log(data);
+    console.log(req.uploadPath);
 
 
     // hash the password
@@ -17,14 +19,16 @@ transformUserCreate = (req)=>{
     // if single files
     if(req.file)   // {}
         {
-        data.image = req.file.filename;
+            console.log(req.file);
+        data.image = `${req.uploadPath}/${req.file.filename}`;
     
     }
     
     // if multiple files
     if(req.files)    // [{},{},{}]
         {
-        data.images = req.files.map(file => file.filename);
+            console.log(req.files);
+        data.images = req.files.map(file =>`${req.uploadPath}/${file.filename}`);
     }
     
     
@@ -37,15 +41,15 @@ transformUserCreate = (req)=>{
     return data;
 }
 
-sendActivationEmail = async ({name,email,token})=>{
+sendActivationEmail = async ({name,email,activateToken})=>{
     try {
         await mailService.sendMail({
-            to: "24.student.Tiwari@broadwayinfosys.edu.np@gmail.com",
+            to: "24.student.kebinmalla@broadwayinfosys.edu.np",
             sub: 'User Created',
             message:`
-            Dear ${data.name},<br>
+            Dear ${name},<br>
             Your account has been created successfully. Please click the link below to activate your account.<br>
-            <a href="${process.env.FRONTEND_URL}/activate/${data.activateToken}">Activate Now</a>
+            <a href="${process.env.FRONTEND_URL}/activate/${activateToken}">Activate Now</a>
             <p>
             <small>This is an auto generated email. Please do not reply to this email.</small>
             </p>
@@ -61,6 +65,43 @@ sendActivationEmail = async ({name,email,token})=>{
         
     }
 }
+
+//user register function
+createUser = async (data)=>{
+    try {
+        console.log(data);
+
+        //create an instance of the user model
+        const user = new UserModel(data);
+        //save the user
+        await user.save();
+
+    } catch (error) {
+        console.log(error);
+        //image delete
+        if(data.image){
+            console.log(`./public/uploads/${data.image}`)
+            deleteFile(`./public/uploads/${data.image}`);
+        }
+        
+        throw error;
+    }
+}
+
+getSingleUserByFilter = async (filter)=>{
+    try {
+        console.log(filter)
+        const userDetail =await UserModel.findOne(filter);
+        if (userDetail) {
+            return userDetail;
+        } else {
+            throw {statusCode:422,message:"Unable to process the request"};
+        }
+    } catch (exception) {
+        throw exception;
+    }
+}
+
 
 }
 

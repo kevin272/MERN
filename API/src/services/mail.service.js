@@ -5,7 +5,7 @@ class MailService{
 
     constructor(){
         try {
-            this.#transporter=nodemailer.createTransport({
+            const config = {
                 host: process.env.SMTP_HOST,
                 port: process.env.SMTP_PORT,
                 secure: false, // Use `true` for port 465, `false` for all other ports
@@ -13,7 +13,12 @@ class MailService{
                   user: process.env.SMTP_USER,
                   pass: process.env.SMTP_PASS,
                 },
-              });
+              }
+
+              if(process.env.MAIL_SERVICE==='gmail'){
+                config['service'] = 'gmail';
+              }
+            this.#transporter=nodemailer.createTransport(config);
         console.log('Mail server connected....');
         } catch (exception) {
             console.log(exception);

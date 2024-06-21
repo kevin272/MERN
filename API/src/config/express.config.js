@@ -2,7 +2,9 @@ const express = require ('express');
 const app = express();
 var morgan = require('morgan')
 
-require("./db.config")
+
+// import database connection
+require('./db.config');
 
 // importing router config
 const router = require('./router.config');
@@ -34,7 +36,22 @@ app.use((err, req, res, next) => {
     let statusCode = err.statusCode || 500;
     let message = err.message || 'Internal Server Error';
     let detail= err.detail || null;
-    
+
+
+    //handling mongoose validation error
+    if (err.code === 11000) {
+        const uniqueFieldKeys = Object.keys(err.keyPattern);  // ['email','phone'] throws array of unique failed keys
+        console.log(uniqueFieldKeys);
+        detail= {};
+        detail[uniqueFieldKeys]=uniqueFieldKeys.map(key => `${key} must be unique`).join(','); 
+       message='Validation Error';
+       statusCode = 400;
+        
+    }
+
+
+
+
     res.status(statusCode).json({
         result:detail,
         message:message,

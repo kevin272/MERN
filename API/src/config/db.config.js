@@ -1,16 +1,15 @@
-const { default: mongoose } = require("mongoose");
+const mongoose = require('mongoose');
 
-require("dotenv").config();
 
-mongoose.connect(process.env.MONGODB_URL, {
-    dbName: process.env.MONGODB_NAME,
+
+mongoose.connect(process.env.MONGODB_URl, {
+    dbName: process.env.DB_NAME,
     autoCreate: true,
-    autoIndex: true
+    autoIndex: true,
+}).then(() => {
+    console.log('Connected to the database');
 })
-.then(() => {
-    console.log("DB Server connected successfully..");
-})
-.catch((err) => {
-    console.error(err);
-    process.exit(1);
-});
+    .catch((err) => {
+        console.log(err);
+        process.exit(1);
+    });

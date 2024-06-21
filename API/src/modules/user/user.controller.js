@@ -3,6 +3,7 @@ const mailService = require('../../services/mail.service');
 const { randomStringGenerator } = require('../../utils/helper');
 const userService = require('./user.service');
 
+
 class UserController{
 //    get all users 
  userLists = (req,res,next)=>{
@@ -15,54 +16,23 @@ class UserController{
 // create a new user
 userCreate = async (req,res,next)=>{
 
-    try {
-        const data = req.body;   // name , email, password,confirmpassword, address, phone
+try {
 
 
+// data transformation
+ const data = userService.transformUserCreate(req);
+ 
+ //Database store
+   const user = await userService.createUser(data)
 
-// hash the password
-const salt = bcrypt.genSaltSync(10);
-data.password = bcrypt.hashSync(data.password,salt);
-// data.confirmpassword = bcrypt.hashSync(data.confirmpassword,salt);
-// if single files
-if(req.file)   // {}
-    {
-    data.image = req.file.filename;
+//  sending mail service
 
-}
-
-// if multiple files
-if(req.files)    // [{},{},{}]
-    {
-    data.images = req.files.map(file => file.filename);
-}
+await userService.sendActivationEmail(data);
 
 
-
-// send confirmation email and other verification process
-data.activateToken = randomStringGenerator(20);
-data.status = 'inactive';
-
-await mailService.sendMail({
-    to: "24.student.kebinmalla@broadwayinfosys.edu.np",
-    sub: 'User Created',
-    message:`
-    Dear ${data.name},<br>
-    Your account has been created successfully. Please click the link below to activate your account.<br>
-    <a href="${process.env.FRONTEND_URL}/activate/${data.activateToken}">Activate Now</a>
-    <p>
-    <small>This is an auto generated email. Please do not reply to this email.</small>
-    </p>
-    <p>
-    Regards,<br>
-    Team
-    </p>
-    `
-});
-
-
+// sending response
 res.status(200).json ({
-    result: data,
+    result: user,
     message:"User Created Successfully",
     meta: null
 })

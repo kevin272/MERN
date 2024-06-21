@@ -17,7 +17,8 @@ confirmPassword:Joi.string().equal(Joi.ref('password')).required().messages({
     'any.required': 'Confirm password must be required',
 
 }),
-profile:Joi.string().optional().empty(),
+// profile tag is optional and maybe empty somethimes and is a picture
+profile:Joi.optional().empty(),
 });
 
 

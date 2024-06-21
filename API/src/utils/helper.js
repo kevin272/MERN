@@ -1,3 +1,6 @@
+const fs = require('fs');
+
+
 const randomStringGenerator = (length) => {
     let chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let random = "";
@@ -8,6 +11,17 @@ const randomStringGenerator = (length) => {
 }
 
 
+
+const deleteFile = async (path) => {
+    try {
+        fs.unlinkSync(path);
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
-    randomStringGenerator
+    randomStringGenerator,
+    deleteFile
 }
