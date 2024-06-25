@@ -6,6 +6,13 @@ const UserModel = require('./user.model');
 
 class UserService {
 
+    generateUserActivationToken= (data)=>{
+        // send confirmation email and other verification process
+    data.activateToken = randomStringGenerator(20);
+    data.activateFor = new Date(Date.now()+24*60*60*1000);  // 24 hours
+    return data;
+    }
+
 transformUserCreate = (req)=>{
     const data = req.body;   // name , email, password,confirmpassword, address, phone
     console.log(data);
@@ -32,20 +39,20 @@ transformUserCreate = (req)=>{
     }
     
     
+    data= this.generateUserActivationToken(data);
     
-    // send confirmation email and other verification process
-    data.activateToken = randomStringGenerator(20);
     data.status = 'inactive';
+   
 
 
     return data;
 }
 
-sendActivationEmail = async ({name,email,activateToken})=>{
+sendActivationEmail = async ({name,email,activateToken, sub='User activation token'})=>{
     try {
         await mailService.sendMail({
-            to: "24.student.kebinmalla@broadwayinfosys.edu.np",
-            sub: 'User Created',
+            to: email,
+            sub: sub,
             message:`
             Dear ${name},<br>
             Your account has been created successfully. Please click the link below to activate your account.<br>

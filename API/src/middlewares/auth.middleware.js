@@ -52,4 +52,3 @@ const loginCheck = (req,res,next) => {
 module.exports = {
     loginCheck
 }
-

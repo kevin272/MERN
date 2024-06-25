@@ -3,7 +3,23 @@ class BannerController{
 
         }
         index = async (req,res,next)=>{
+        try {
+                // pagination
+                const page = +req.query.page || 1;
+                const limit = +req.query.limit || 10;
+                
+                const skip = (page - 1) * limit;
 
+                let filter = {};
+                if(req.query.search){
+                        filter ={
+                                title: { $regex: req.query.search, $options: 'i' }
+                        
+                        }
+                }
+        } catch (exception) {
+                next(exception);
+        }
         }
         view = async (req,res,next)=>{
 

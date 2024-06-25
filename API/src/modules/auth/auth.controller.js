@@ -77,21 +77,107 @@ class AuthController{
             }
         
         }
+    getUser =   async (req,res,next)=>{
+        try {
+           
+            
+        } catch (exception) {
+            console.log(exception);
+            next(exception);
+        }
+    }
 
     activateUser = async (req,res,next)=>{
         try {
             const {activationToken} = req.params;
             if (activationToken.length !== 20){
                throw {statusCode: 422, message: 'Invalid activationToken'}
-            }else{
-              await  userService.getSingleUserByFilter({activationToken})
             }
+             const user =  await  userService.getSingleUserByFilter({activationToken});
+            
+            const today = Date.now();
+            const activateFor = user.activatedFor.getTime();
+
+            if (today > activateFor){
+                throw {statusCode: 422, message: 'Token Expired'}
+            }
+            user.activationToken = null;
+            user.activatedFor = null;
+            user.status = statusType.ACTIVE;
+            await user.save();   //insert or update
+
+            res.json({
+                result: null,
+                message: 'User activated successfully. Please login to continue.',
+                meta: null
+            })
+
+
         } catch (exception) {
             console.log(exception)
         }
     }
 
+resendActivationToken = async (req,res,next)=>{
+    try {
+        const {token} = req.params;
+        const user = await userService.getSingleUserByFilter({token});
 
+         user = userService.generateUserActivationToken(user);
+
+         await user.save();  //insert or update
+        await userService.sendActivationEmail({
+            email: user.email,
+            activationToken: user.activationToken,
+            name: user.name,
+            sub: 'User activation token'
+        });
+
+        res.json({
+            result: null,
+            message: 'Activation token sent successfully',
+            meta: null
+        });
+
+
+
+    } catch (exception) {
+      next(exception);
+    }
+}
+
+refreshToken = async (req,res,next)=>{
+    try {
+        const token = req.headers['authorization'] || null;
+        if(!token){
+            throw {statusCode: 401, message: 'Token required'}
+        }
+        token = token.split(' ')[1];
+        const {sub,type} = jwt.verify(token,process.env.JWT_SECRET);
+
+        if(!type || type !== 'refresh'){
+            throw {statusCode: 401, message: 'Refresh token required'}
+        }
+
+        await userService.getSingleUserByFilter({_id:sub});
+
+        const accessToken = jwt.sign({sub},process.env.JWT_SECRET,{expiresIn:'1 day'});
+        
+        const refreshToken = jwt.sign({sub,type:'refresh'},process.env.JWT_SECRET,{expiresIn:'1 day'});
+        
+        res.json({
+            result:{
+                token :accessToken,
+                refreshToken:refreshToken,
+            },
+            message:'Token refreshed successfully',
+            meta:null
+        })
+    } catch (exception) {
+        console.log(exception);
+        next(exception);
+    }
+}
 
 }
 
