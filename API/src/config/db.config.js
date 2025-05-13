@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
+require('dotenv').config();
 
 
-
-mongoose.connect(process.env.MONGODB_URl, {
-    dbName: process.env.DB_NAME,
+mongoose.connect(process.env.MONGODB_URL, {
+    dbName: process.env.MONGODB_NAME,
     autoCreate: true,
     autoIndex: true,
 }).then(() => {

@@ -7,12 +7,12 @@ const server = http.createServer(app);
 
 
 // assigning port values
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 9005;
 server.listen(port, (error) => {
     if (error) {
         console.log('Error starting server');
     } else {
-        console.log('Server started on http://localhost:3000');
+        console.log('Server started on http://localhost:'+port);
         console.log('Press Ctrl+C to stop');
     }
 }

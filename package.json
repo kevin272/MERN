@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "@types/bcryptjs": "^3.0.0"
+  }
+}

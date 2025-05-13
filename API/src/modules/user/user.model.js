@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { userRoles,statusType } = require('../../config/constants.config');
+const { UserRoles,statusType } = require('../../config/constants.config');
 const { number } = require('joi');
 const { string } = require('joi');
 
@@ -37,8 +37,8 @@ const UserSchema = new mongoose.Schema({
     },
     role:{
         type: String,
-        enum: [...Object.values(userRoles)],
-        default: userRoles.CUSTOMER
+        enum: [...Object.values(UserRoles)],
+        default: UserRoles.CUSTOMER
     },
     activationToken:String,
     activatedFor:Date,
@@ -65,6 +65,6 @@ const UserSchema = new mongoose.Schema({
 
 
 
-const UserModel = mongoose.model('User', UserSchema, );
+const UserModel = mongoose.model('User', UserSchema);
 
 module.exports = UserModel;

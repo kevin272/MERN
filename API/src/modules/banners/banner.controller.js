@@ -1,6 +1,16 @@
 class BannerController{
         create = async (req,res,next)=>{
-
+    try {
+      const data = req.body;
+      const image = req.file;   
+      const response= await uploadImage('./public/uploads/banner/'+image.filename);
+      data.image = response.url;
+      deleteFile('./public/uploads/banner/'+image.filename);
+        }
+        catch (exception) {
+                console.log(exception);
+                next(exception);
+        }
         }
         index = async (req,res,next)=>{
         try {
