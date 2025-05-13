@@ -1,4 +1,4 @@
-const fs = require('fs');
+const { unlinkSync } = require('fs');
 
 
 const randomStringGenerator = (length) => {
@@ -14,7 +14,7 @@ const randomStringGenerator = (length) => {
 
 const deleteFile = async (path) => {
     try {
-        fs.unlinkSync(path);
+        unlinkSync(path);
     }
     catch (error) {
         console.log(error);
@@ -24,4 +24,4 @@ const deleteFile = async (path) => {
 module.exports = {
     randomStringGenerator,
     deleteFile
-}
+};
