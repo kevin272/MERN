@@ -1,12 +1,11 @@
 const jwt = require('jsonwebtoken');
-
-
+require('dotenv').config();
 // creating middlewares for user 
 
 
 const loginCheck = (req,res,next) => {
     try {
-        const token = req.headers['authorization'] || null;
+        let token = req.headers['authorization'] || null;
         if (!token) {
             throw {
                 statusCode: 401,

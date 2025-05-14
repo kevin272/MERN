@@ -1,3 +1,4 @@
+require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const mailService = require('../../services/mail.service');
 const { randomStringGenerator } = require('../../utils/helper');
