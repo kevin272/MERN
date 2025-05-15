@@ -6,7 +6,7 @@ class BannerController{
         create = async (req,res,next)=>{
     try {
       const data = req.body;
-      data.image = await uploadImage('./public/uploads/banner/'+req.file.filename);
+      data.image = await uploadImage('./public/uploads/banner/' + req.file.filename);
       deleteFile('./public/uploads/banner/'+req.file.filename);
       console.log(data);
       const banner = await BannerService.createBanner(data);

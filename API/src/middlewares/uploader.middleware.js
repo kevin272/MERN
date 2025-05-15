@@ -1,47 +1,53 @@
-const multer = require('multer');
-const fs = require('fs');
-const { randomStringGenerator } = require('../utils/helper');
-const { fileFilterType } = require('../config/constants.config');
+const multer = require("multer");
+const fs = require("fs");
+const { randomStringGenerator } = require("../utils/helper");
+const { fileFilterType } = require("../config/constants.config");
 
-// Define multer storage
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const path = `./public/uploads/${req.uploadPath}`;
+
+    // if folder doesnot exist make directory
     if (!fs.existsSync(path)) {
       fs.mkdirSync(path, { recursive: true });
     }
+
     cb(null, path);
   },
-  filename: function (req, file, cb) {
-    const fileExt = file.originalname.split('.').pop();
-    const filename = `${randomStringGenerator(10)}-${Date.now()}.${fileExt}`;
-    console.log(filename);
-    cb(null, filename);
-  }
+  fileFilter: (req, file, cb) => {
+    let fileExt = file.originalname.split(".").pop(); 
+    if (allowedExt.includes(fileExt.toLowerCase())) {
+      cb(null, true); // Accept file
+    } else {
+      cb(new Error(`File format not allowed`), false); // Reject file
+    }
+  },
+  
 });
 
-// Upload middleware factory
+// create a uploadfile middleware that takes file type and validates it
 const uploadFile = (fileType = fileFilterType.IMAGE) => {
-  let allowedExt = ['png', 'jpg', 'jpeg', 'gif'];
-  if (fileType === fileFilterType.DOC) {
-    allowedExt = ['pdf', 'doc', 'docx', 'txt'];
+  let allowedExt = ["png", "jpg", "jpeg", "gif","webp","bmp"];
+  if (fileType == fileFilterType.DOC) {
+   allowedExt = ["pdf", "doc", "docx", "txt", "docx"];
   }
 
   return multer({
-    storage,
+    storage: storage,
     fileFilter: (req, file, cb) => {
-      const fileExt = file.originalname.split('.').pop().toLowerCase();
-      if (allowedExt.includes(fileExt)) {
+      let fileExt = file.originalname.split(".").pop(); //maybe sometimes it can have uppercase extension
+      if (allowedExt.includes(fileExt.toLowerCase())) {
         cb(null, true);
       } else {
-        cb({ code: 400, message: 'File format not allowed' }, false);
+        cb({ code: 400, message: `file format not allowed` }, false);
       }
     },
-    limits: { fileSize: 1024 * 1024 * 5 } // 5 MB
+    limits: { fileSize: 1024 * 1024 * 5 }, //5MB
   });
 };
 
-// Middleware to set upload path
+
+
 const setPath = (path) => {
   return (req, res, next) => {
     req.uploadPath = path;
@@ -51,5 +57,5 @@ const setPath = (path) => {
 
 module.exports = {
   uploadFile,
-  setPath
+  setPath,
 };

@@ -9,7 +9,18 @@ const router = require('express').Router();
 
 
 router.route('/')
-    .get(loginCheck,hasPermission(['admin']))
-    .post(loginCheck,hasPermission(['admin']), setPath('banners') ,uploadFile(fileFilterType.IMAGE).single("image"),bodyValidator(BannerCreateDTO), bannerController.create)
+.post(
+        (req, res, next) => { console.log('🧭 Entered banner POST route'); next(); },
+        loginCheck,
+        (req, res, next) => { console.log('🔑 User is logged in'); next(); },
+        hasPermission(['admin']),
+        (req, res, next) => { console.log('🔑 User has permission'); next(); },
+        setPath('banner'),
+        (req, res, next) => { console.log('🧭 Set path for banner upload'); next(); },
+        uploadFile().single('image'),
+        (req, res, next) => { console.log('📸 Uploaded file:', req.file); next(); },
+        bodyValidator(BannerCreateDTO),
+        bannerController.create
+)
 
 module.exports = router;

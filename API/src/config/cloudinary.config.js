@@ -1,6 +1,6 @@
 require('dotenv').config();
 const cloudinary = require ('cloudinary').v2;
-cloudinary .config (
+cloudinary.config (
     {
         secure: true,
         api_key: process.env.CLOUDINARY_API_KEY,
@@ -8,7 +8,6 @@ cloudinary .config (
         cloud_name: process.env.CLOUD_NAME,
     }
 );
-
 /////////////////////////
 // Uploads an image file
 /////////////////////////
@@ -55,4 +54,5 @@ const getAssetInfo = async (publicId) => {
 module.exports = {
     uploadImage,
     getAssetInfo,
+    cloudinary
 };

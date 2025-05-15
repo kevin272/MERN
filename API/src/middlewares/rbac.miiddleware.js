@@ -1,8 +1,12 @@
 const hasPermission= (accessedBy) => {
 
+
   return (req, res, next) => {
     try {
       const user = req.authUser || null;
+        console.log('User Role:', user.role);
+console.log('Allowed Roles:', accessedBy);
+
       if (!user) {
         throw {
           statusCode: 401,
@@ -24,7 +28,7 @@ const hasPermission= (accessedBy) => {
         }
       }
     } catch (exception) {
-      
+      next(exception);
     }
   }
 }
