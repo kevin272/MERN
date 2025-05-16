@@ -2,9 +2,10 @@ const mongoose = require('mongoose');
 const { statusType } = require('../../config/constants.config');
 const { UserRoles } = require('../../config/constants.config');
 
-const BannerSchema = new mongoose.Schema({
+const InvestorSchema = new mongoose.Schema({
     title:{
         type: String,
+        unique: true,
         required: true,
     min:3,
     max:100
@@ -13,22 +14,16 @@ const BannerSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    link:{
+    slug:{
         type:String,
-        default:null
+        unique: true,
+        required: true,
+ 
     },
     status:{
         type:String,
         enum: Object.values(statusType),
         default: statusType.ACTIVE
-    },
-    startDate:{
-        type: Date,
-        default: null
-    },
-    endDate:{
-        type: Date,
-        default: null
     },
     createdBy:{
         type: mongoose.Types.ObjectId,
@@ -44,7 +39,7 @@ const BannerSchema = new mongoose.Schema({
 
 
 
-const BannerModel = mongoose.model('Banner', BannerSchema);
+const InvestorModel = mongoose.model('Investor', InvestorSchema);
 
 
-module.exports = BannerModel;
+module.exports = InvestorModel;

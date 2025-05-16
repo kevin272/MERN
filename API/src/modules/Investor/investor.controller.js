@@ -1,20 +1,22 @@
-const BannerService = require('./banner.service');
 const { uploadImage} = require('../../config/cloudinary.config');
 const { deleteFile } = require('../../utils/helper');
+const slugify = require('slugify');
 const { statusType } = require('../../config/constants.config');
+const investorService = require('./investor.service');
 
-class BannerController{
+class InvestorController{
         create = async (req,res,next)=>{
     try {
       const data = req.body;
       data.createdBy = req.authUser.id;
-      data.image = await uploadImage('./public/uploads/banner/' + req.file.filename);
-      deleteFile('./public/uploads/banner/'+req.file.filename);
+      data.slug = slugify(data.title, { lower: true });
+      data.image = await uploadImage('./public/uploads/Investor/' + req.file.filename);
+      deleteFile('./public/uploads/Investor/'+req.file.filename);
       console.log(data);
-      const banner = await BannerService.createBanner(data);
+      const Investor = await investorService.createInvestor(data);
       res.json({
-        result: banner,
-        message: "Banner Created Successfully",
+        result: Investor,
+        message: "Investor Created Successfully",
         meta: null
         });
 }
@@ -38,12 +40,12 @@ class BannerController{
                     }
                 }
 
-                const banners = await BannerService.getBanners(filter, skip, limit);
-                const total = await BannerService.countBanners(filter);
+                const Investors = await investorService.getInvestors(filter, skip, limit);
+                const total = await investorService.countInvestors(filter);
 
                 res.json({
-                    result: banners,
-                    message: "Banners fetched successfully",
+                    result: Investors,
+                    message: "Investors fetched successfully",
                     meta: {
                         total,
                         page,
@@ -57,13 +59,13 @@ class BannerController{
 
         view = async (req, res, next) => {
             try {
-                const banner = await BannerService.getBannerById(req.params.id);
-                if (!banner) {
-                    return res.status(404).json({ message: "Banner not found" });
+                const Investor = await investorService.getInvestorById(req.params.id);
+                if (!Investor) {
+                    return res.status(404).json({ message: "Investor not found" });
                 }
                 res.json({
-                    result: banner,
-                    message: "Banner fetched successfully",
+                    result: Investor,
+                    message: "Investor fetched successfully",
                     meta: null
                 });
             } catch (exception) {
@@ -75,16 +77,16 @@ class BannerController{
             try {
                 const data = req.body;
                 if (req.file) {
-                    data.image = await uploadImage('./public/uploads/banner/' + req.file.filename);
-                    deleteFile('./public/uploads/banner/' + req.file.filename);
+                    data.image = await uploadImage('./public/uploads/Investor/' + req.file.filename);
+                    deleteFile('./public/uploads/Investor/' + req.file.filename);
                 }
-                const banner = await BannerService.updateBanner(req.params.id, data);
-                if (!banner) {
-                    return res.status(404).json({ message: "Banner not found" });
+                const Investor = await investorService.updateInvestor(req.params.id, data);
+                if (!Investor) {
+                    return res.status(404).json({ message: "Investor not found" });
                 }
                 res.json({
-                    result: banner,
-                    message: "Banner updated successfully",
+                    result: Investor,
+                    message: "Investor updated successfully",
                     meta: null
                 });
             } catch (exception) {
@@ -94,13 +96,13 @@ class BannerController{
 
         delete = async (req, res, next) => {
             try {
-                const banner = await BannerService.deleteBanner(req.params.id);
-                if (!banner) {
-                    return res.status(404).json({ message: "Banner not found" });
+                const Investor = await investorService.deleteInvestor(req.params.id);
+                if (!Investor) {
+                    return res.status(404).json({ message: "Investor not found" });
                 }
                 res.json({
-                    result: banner,
-                    message: "Banner deleted successfully",
+                    result: Investor,
+                    message: "Investor deleted successfully",
                     meta: null
                 });
             } catch (exception) {
@@ -110,7 +112,7 @@ class BannerController{
 
     ListForHome = async (req, res, next) => {
         try{
-            const data = await BannerService.listData({
+            const data = await investorService.listData({
                 limit:3,
                 skip:0,
                 filter: {
@@ -122,7 +124,7 @@ class BannerController{
             })
             res.json({
                 result: data,
-                message: "Banner List",
+                message: "Investor List",
                 meta: null
             })
         }
@@ -132,4 +134,4 @@ class BannerController{
 }
 }
 
-module.exports = new BannerController();
+module.exports = new InvestorController();
