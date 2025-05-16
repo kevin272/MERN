@@ -3,7 +3,7 @@ const { loginCheck } = require('../../middlewares/auth.middleware');
 const { hasPermission } = require('../../middlewares/rbac.miiddleware');
 const { setPath, uploadFile } = require('../../middlewares/uploader.middleware');
 const { bodyValidator } = require('../../middlewares/validator.middleware');
-const { BannerCreateDTO } = require('./banner.request');
+const { BannerCreateDTO , BannerUpdateDTO} = require('./banner.request');
 const bannerController = require('./banner.controller');
 const router = require('express').Router();
 
@@ -22,5 +22,11 @@ router.route('/')
         bodyValidator(BannerCreateDTO),
         bannerController.create
 )
+.get(loginCheck, hasPermission(['admin']), bannerController.index);
 
+
+router.route('/:id')
+    .get( bannerController.view)
+        .patch(loginCheck, hasPermission(['admin']), setPath('banner'), uploadFile().single('image'), bodyValidator(BannerUpdateDTO), bannerController.edit)
+    .delete(loginCheck, hasPermission(['admin']), bannerController.delete);
 module.exports = router;
