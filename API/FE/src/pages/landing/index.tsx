@@ -1,8 +1,15 @@
+//import index.css
+import './landing.css';
+import Title from '../../components/common/title';
+
 const LandingPage = () => {
     return (
-        <div>
-        <h1>Landing Page</h1>
-        <p>Welcome to the landing page!</p>
+        <div className="landing-page">
+            <div className="landing-page-content">
+                <div className="landing-page-title">
+                    <Title />
+                </div>
+        </div>
         </div>
     );
     }
