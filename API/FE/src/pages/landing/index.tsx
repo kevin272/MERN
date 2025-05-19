@@ -1,16 +1,27 @@
-//import index.css
-import './landing.css';
-import Title from '../../components/common/title';
+import Herosection from "../../components/herosection/herosection.tsx";
+import Aboutus from "../../components/AboutUsCard";
+import Areasofpracticecomponent from "../../components/practice/aop.tsx";
+import TeamSection from "../Our Team/index.tsx";
 
-const LandingPage = () => {
-    return (
-        <div className="landing-page">
-            <div className="landing-page-content">
-                <div className="landing-page-title">
-                    <Title />
-                </div>
-        </div>
-        </div>
-    );
-    }
-export default LandingPage;
+
+const Landingpage=() => {
+
+    return(
+         <>
+        
+        <Herosection/> 
+        <br/>    
+        
+        <Aboutus/>
+        <br />
+        <br/>
+        <Areasofpracticecomponent/>
+        <br/>
+        <TeamSection/>
+        <br/>   
+        
+        </>
+    )
+}
+
+export default Landingpage;
