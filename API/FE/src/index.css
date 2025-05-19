@@ -1,4 +1,7 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import 'flowbite';
+
+@import '../node_modules/flowbite/dist/flowbite.css';
+

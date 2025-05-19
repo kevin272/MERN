@@ -1,6 +1,6 @@
-import { Button, Navbar, NavbarToggle, NavbarCollapse,   } from "flowbite-react";
+import { Button, Navbar, NavbarToggle, NavbarCollapse } from "flowbite-react";
 import { NavLink, useNavigate } from "react-router-dom";
-import Logo from "../../../assets/images/logo.svg";
+import Logo from "../../assets/public/logo.svg";
 import { useState, useEffect } from "react";
 import authSvc from "../../../pages/auth/auth.service";
 
@@ -26,7 +26,7 @@ export const Homeheader = () => {
 
   return (
     <Navbar fluid className="bg-black h-20 sm:h-32 relative z-50">
-      <a href="https://SajhaBiz.com.np" className="flex items-center">
+      <a href="https://legacylegal.com.np" className="flex items-center">
         <img src={Logo} className="h-16 w-32 sm:h-28 sm:w-64" alt="LLS Logo" />
       </a>
 

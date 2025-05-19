@@ -3,7 +3,7 @@ import Layout from "../layout/layout";
 import Landingpage from "../pages/landing";
 import {Signin, ForgotPassword} from "../pages/signin/signin";
 import Contact from "../pages/contactpage";
-import Aboutuspage from "../pages/About Us";
+import Aboutuspage from  "../pages/About Us"
 import { BlogsCreatePage, Blogslistingpage, BlogsEditPage } from "../pages/blogs/index";
 import { useEffect, useState } from "react";
 import AuthContext from "../context/auth.context";
