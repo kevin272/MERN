@@ -1,50 +1,69 @@
 import { Footer } from "flowbite-react";
-import {   BsFacebook,   BsTwitter } from "react-icons/bs";
-import { GoLaw } from "react-icons/go";
+import { BsFacebook, BsTwitter } from "react-icons/bs";
+// Removed GoLaw as it doesn't fit the crowdfunding theme
 
-
-const Footercomponent=()=>{
-    return(
+const Footercomponent = () => {
+    return (
         <>
-    <Footer container className="bg-black rounded-none text-white">
-      <div className="w-full">
-        <div className="grid w-full justify-between sm:flex sm:justify-between md:flex md:grid-cols-1">
-          <div> <a href="/">
-            <img  className="w-64 h-32" src="https://legacylegal.com.np/wp-content/uploads/2024/10/Untitled.bmp" alt="logos"  /> </a></div>
-          <div className="grid grid-cols-2 gap-8 sm:mt-4 sm:grid-cols-3 sm:gap-6">
-            <div>
-              <Footer.Title className="text-white" title="Navigate" />
-              <Footer.LinkGroup col>
-                <Footer.Link className="text-white" href="/">Home</Footer.Link>
-                <Footer.Link className="text-white" href="/ourteam">Our Team</Footer.Link>
-                <Footer.Link className="text-white" href="/areaofpractice">Areas of Practice</Footer.Link>
-                <Footer.Link className="text-white" href="/blogs">Blogs</Footer.Link>
-                <Footer.Link className="text-white" href="/contact">Contact</Footer.Link>
-              </Footer.LinkGroup>
-            </div>
-            <div>
-              <Footer.Title className="text-white" title="Follow us" />
-              <Footer.LinkGroup col>
-                <Footer.Icon className="text-white" href="facebook.com" icon={BsFacebook}/>
-                <Footer.Icon className="text-white" href="x.com" icon={BsTwitter}/>
-              </Footer.LinkGroup>
-            </div>
-           <div >
-           <Footer.Title className="text-white mx-7" title="Working Hours " />
-             <div className="flex mx-20"><GoLaw/></div> <br/>
-             Sunday-Friday: 9:30PM to 5PM
-           </div>
-          </div>
-        </div>
-        <Footer.Divider />
-        <div className="w-full sm:flex sm:items-center sm:justify-between md:justify-center">
-          <Footer.Copyright className="text-white" href="facebook.com/kebinmalla" by="Kebin Malla" year={2025} />
-          
-        </div>
-      </div>
-    </Footer>
+            <Footer container className="bg-emerald-800 dark:bg-gray-900 text-white rounded-t-3xl shadow-lg">
+                <div className="w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 justify-between">
+                        {/* Logo and Brand Info */}
+                        <div className="flex flex-col items-center md:items-start text-center md:text-left">
+                            <a href="/" className="flex items-center mb-4">
+
+                                <span className="ml-3 text-2xl font-bold text-white dark:text-emerald-300">SajhaBiz</span>
+                            </a>
+                            <p className="text-sm text-emerald-200 dark:text-gray-400 mt-2">
+                                Empowering local dreams, together.
+                            </p>
+                        </div>
+
+                        {/* Navigation Links */}
+                        <div className="text-center md:text-left">
+                            <Footer.Title className="text-emerald-300 dark:text-emerald-400 text-lg font-semibold mb-4" title="Navigate" />
+                            <Footer.LinkGroup col className="space-y-2">
+                                <Footer.Link className="text-emerald-100 hover:text-white dark:text-gray-300 dark:hover:text-white transition-colors duration-200" href="/">Home</Footer.Link>
+                                <Footer.Link className="text-emerald-100 hover:text-white dark:text-gray-300 dark:hover:text-white transition-colors duration-200" href="/campaign">Campaigns</Footer.Link>
+                                <Footer.Link className="text-emerald-100 hover:text-white dark:text-gray-300 dark:hover:text-white transition-colors duration-200" href="/aboutus">About Us</Footer.Link>
+                                <Footer.Link className="text-emerald-100 hover:text-white dark:text-gray-300 dark:hover:text-white transition-colors duration-200" href="/contact">Contact</Footer.Link>
+                            </Footer.LinkGroup>
+                        </div>
+
+                        {/* Social Media */}
+                        <div className="text-center md:text-left">
+                            <Footer.Title className="text-emerald-300 dark:text-emerald-400 text-lg font-semibold mb-4" title="Connect With Us" />
+                            <div className="flex justify-center md:justify-start space-x-6">
+                                <Footer.Icon 
+                                    className="text-emerald-100 hover:text-white dark:text-gray-300 dark:hover:text-white transition-colors duration-200 text-2xl" 
+                                    href="https://facebook.com/kebinmalla" // Updated link for consistency
+                                    icon={BsFacebook}
+                                />
+                                <Footer.Icon 
+                                    className="text-emerald-100 hover:text-white dark:text-gray-300 dark:hover:text-white transition-colors duration-200 text-2xl" 
+                                    href="https://twitter.com/kebinmalla" // Updated link for consistency
+                                    icon={BsTwitter}
+                                />
+                                {/* Add more social icons if needed */}
+                            </div>
+                        </div>
+                    </div>
+
+                    <Footer.Divider className="my-8 border-emerald-700 dark:border-gray-700" />
+
+                    {/* Copyright */}
+                    <div className="w-full text-center sm:flex sm:items-center sm:justify-center">
+                        <Footer.Copyright 
+                            className="text-emerald-200 dark:text-gray-400 text-sm" 
+                            href="/" // Link to home or your company's website
+                            by="SajhaBiz™" // Changed to SajhaBiz
+                            year={new Date().getFullYear()} 
+                        />
+                    </div>
+                </div>
+            </Footer>
         </>
-    )
+    );
 }
 
 export default Footercomponent;

@@ -9,7 +9,7 @@ import {
 } from "flowbite-react";
 import Heading1 from "../../components/common/title";
 import { toast } from "react-toastify";
-import CampaignSvc from "./campaigns.service"; // Assuming you'll create this
+import CampaignSvc from "./campaigns.service";
 import { useNavigate } from "react-router-dom";
 import LoadingComponent from "../../components/common/loading/loading.component";
 
@@ -37,7 +37,10 @@ const CreateCampaignPage = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData(prev => ({ 
+      ...prev, 
+      [name]: (name === 'goalAmount') ? parseFloat(value) || 0 : value 
+    }));
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,23 +53,40 @@ const CreateCampaignPage = () => {
     setLoading(true);
 
     try {
-      //   if (!formData.image) {
-      //     toast.error("Please upload an image");
-      //     return;
-      //   }
-
-      const submitData = new FormData();
-      for (const key in formData) {
-        //  @ts-ignore
-        submitData.append(key, formData[key]);
+      // IMPORTANT: Re-enable and refine image validation
+      if (!formData.image) {
+        toast.error("Please upload a campaign image.");
+        setLoading(false); // Stop loading if image is missing
+        return; // Exit early
       }
 
-      await CampaignSvc.createCampaign(submitData);
+      const submitData = new FormData();
+      // Append all form data fields
+      for (const key in formData) {
+        // Ensure image is appended correctly as a File object
+        if (key === 'image' && formData.image) {
+          submitData.append(key, formData.image);
+        } else if (formData[key as keyof typeof formData] !== null && formData[key as keyof typeof formData] !== undefined) {
+          // Convert numbers to strings for FormData, and handle other types
+          submitData.append(key, String(formData[key as keyof typeof formData])); 
+        }
+      }
+
+      // CRUCIAL LOGGING: Inspect FormData before sending
+      console.log("Frontend: FormData contents before sending (Create Campaign):");
+      for (let pair of submitData.entries()) {
+        console.log(pair[0]+ ': ' + pair[1]); 
+      }
+
+      const response = await CampaignSvc.createCampaign(submitData);
+      console.log("Frontend: Campaign creation response:", response); // Log the full response
+
       toast.success("Campaign created successfully!");
-      navigate("/admin/campaigns"); //  Redirect to campaign list page
-    } catch (error) {
-      console.error("Error creating campaign:", error);
-      toast.error("Could not create campaign. Please try again.");
+      navigate("/admin/campaign"); // Redirect to campaign list page (ensure this is the correct admin path)
+    } catch (error: any) { // Catch the error to access its properties
+      console.error("Frontend: Error creating campaign:", error); // Log the full error object
+      const errorMessage = error.response?.data?.message || "Could not create campaign. Please try again.";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -77,7 +97,7 @@ const CreateCampaignPage = () => {
       <div className="overflow-x-auto mt-5 mb-5 ml-2 mr-2">
         <Heading1>Create Campaign</Heading1>
         <br />
-        <hr />
+        <hr className="border-green-600" /> {/* Green hr */}
       </div>
 
       <div>
@@ -88,7 +108,7 @@ const CreateCampaignPage = () => {
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div>
-                <Label htmlFor="title" value="Title" />
+                <Label htmlFor="title" value="Title" className="text-green-800" /> {/* Green label */}
                 <TextInput
                   id="title"
                   name="title"
@@ -97,11 +117,12 @@ const CreateCampaignPage = () => {
                   required
                   value={formData.title}
                   onChange={handleChange}
+                  className="focus:border-green-600 focus:ring-green-600 rounded-md" // Green focus
                 />
               </div>
 
               <div>
-                <Label htmlFor="description" value="Description" />
+                <Label htmlFor="description" value="Description" className="text-green-800" /> {/* Green label */}
                 <Textarea
                   id="description"
                   name="description"
@@ -110,11 +131,12 @@ const CreateCampaignPage = () => {
                   rows={4}
                   value={formData.description}
                   onChange={handleChange}
+                  className="focus:border-green-600 focus:ring-green-600 rounded-md" // Green focus
                 />
               </div>
 
               <div>
-                <Label htmlFor="goalAmount" value="Goal Amount" />
+                <Label htmlFor="goalAmount" value="Goal Amount" className="text-green-800" /> {/* Green label */}
                 <TextInput
                   id="goalAmount"
                   name="goalAmount"
@@ -123,12 +145,13 @@ const CreateCampaignPage = () => {
                   required
                   value={formData.goalAmount ? formData.goalAmount.toString() : ""}
                   onChange={handleChange}
+                  className="focus:border-green-600 focus:ring-green-600 rounded-md" // Green focus
                 />
               </div>
 
               <div className="flex gap-4">
-                <div>
-                  <Label htmlFor="startDate" value="Start Date" />
+                <div className="flex-1"> {/* Use flex-1 to make them take equal space */}
+                  <Label htmlFor="startDate" value="Start Date" className="text-green-800" /> {/* Green label */}
                   <TextInput
                     id="startDate"
                     name="startDate"
@@ -136,11 +159,12 @@ const CreateCampaignPage = () => {
                     required
                     value={formData.startDate}
                     onChange={handleChange}
+                    className="focus:border-green-600 focus:ring-green-600 rounded-md" // Green focus
                   />
                 </div>
 
-                <div>
-                  <Label htmlFor="endDate" value="End Date" />
+                <div className="flex-1"> {/* Use flex-1 */}
+                  <Label htmlFor="endDate" value="End Date" className="text-green-800" /> {/* Green label */}
                   <TextInput
                     id="endDate"
                     name="endDate"
@@ -148,18 +172,20 @@ const CreateCampaignPage = () => {
                     required
                     value={formData.endDate}
                     onChange={handleChange}
+                    className="focus:border-green-600 focus:ring-green-600 rounded-md" // Green focus
                   />
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="category" value="Category" />
+                <Label htmlFor="category" value="Category" className="text-green-800" /> {/* Green label */}
                 <Select
                   id="category"
                   name="category"
                   required
                   value={formData.category}
                   onChange={handleChange}
+                  className="focus:border-green-600 focus:ring-green-600 rounded-md" // Green focus
                 >
                   <option value="">Select a category</option>
                   <option value="technology">Technology</option>
@@ -171,12 +197,13 @@ const CreateCampaignPage = () => {
               </div>
 
               <div>
-                <Label htmlFor="image" value="Upload Image" />
+                <Label htmlFor="image" value="Upload Image" className="text-green-800" /> {/* Green label */}
                 <FileInput
                   id="image"
                   name="image"
                   accept="image/*"
                   onChange={handleImageChange}
+                  className="focus:border-green-600 focus:ring-green-600 rounded-md" // Green focus
                 />
                 {formData.image && typeof formData.image !== "string" && (
                   <p className="mt-1 text-sm text-gray-500 dark:text-gray-300">
@@ -185,7 +212,12 @@ const CreateCampaignPage = () => {
                 )}
               </div>
 
-              <Button type="submit">Create Campaign</Button>
+              <Button 
+                type="submit" 
+                className="bg-green-700 hover:bg-green-800 focus:ring-green-600 focus:ring-offset-2 rounded-lg text-white font-semibold py-3 px-6 transition duration-300 transform hover:scale-105 shadow-md"
+              >
+                Create Campaign
+              </Button>
             </form>
           )}
         </div>

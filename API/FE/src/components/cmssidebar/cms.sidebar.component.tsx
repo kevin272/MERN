@@ -5,7 +5,7 @@ import { NavLink } from "react-router-dom";
 const adminMenu = [
   { name: "Home", url: "/admin", icons: <HiHome /> },
   { name: "Team Member Management", url: "/admin/teammembers", icons: <HiUserAdd /> },
-  { name: "Blogs Management", url: "/admin/blogs", icons: <HiDocumentAdd /> },
+  { name: "Campaign Management", url: "/admin/campaign", icons: <HiDocumentAdd /> },
   { name: "Areas of Practice", url: "/admin/areasofpractice", icons: <HiScale /> }
 ];
 

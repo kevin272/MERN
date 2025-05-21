@@ -32,6 +32,9 @@ class CampaignService extends HttpService{
     async getCampaign(id: string) {
         return await this.getRequest(`/campaign/${id}`, { auth: true });
     }
+    async getActiveCampaignsForPublicHome(limit: number = 5) {
+        return await this.getRequest("/campaign/list-home", { params: { limit } });
+    }
 }
 const CampaignSvc = new CampaignService();
 export default CampaignSvc;

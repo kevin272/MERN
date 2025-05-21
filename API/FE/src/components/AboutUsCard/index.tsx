@@ -1,46 +1,42 @@
-import Heading1 from "../common/title";
-import { Button } from "flowbite-react";
-import logo from "../../assets/logo.svg";
-
-const Aboutus = () => {
+const AboutUs = () => {
   return (
-    <>
-      <br />
-      <Heading1>About Us</Heading1>
-      <br />
-      <div className="flex flex-col md:flex-row items-center justify-between p-8 bg-gray-100">
-        <div className="md:w-1/2 mb-6 md:mb-0">
+    // Outer container to center the card and provide a subtle background
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-green-100 dark:from-gray-900 dark:to-gray-800 p-4 sm:p-6">
+      {/* The main About Us card */}
+      <div className="w-full max-w-3xl bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden
+                      border border-emerald-100 dark:border-gray-700
+                      transform transition-all duration-300 hover:scale-103">
+        {/* Card Header / Logo */}
+        <div className="p-6 sm:p-8 text-center border-b border-emerald-100 dark:border-gray-700">
           <img
-            src={logo}
-            alt="SajhaBiz"
-            className="w-3/4 h-auto rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
+            src="https://placehold.co/100x100/d1fae5/065f46?text=SajhaBiz"
+            alt="SajhaBiz Logo"
+            className="mx-auto mb-4 w-24 h-24 object-cover rounded-full shadow-md border-3 border-emerald-300 dark:border-emerald-700"
           />
-        </div>
-        <div className="md:w-1/2 md:pl-8">
-          <h2 className="text-[30px] font-bold mb-4 font-serif">
-            Empowering Local Dreams: Crowdfunding for Nepal’s Businesses
+          <h2 className="text-3xl font-extrabold text-emerald-800 dark:text-emerald-300 mb-2">
+            About <span className="text-emerald-600 dark:text-emerald-400">SajhaBiz</span>
           </h2>
-          <p className="text-lg text-gray-700 text-justify">
-            SajhaBiz is a community-powered crowdfunding platform built to uplift and empower small and local businesses across Nepal. Our mission is to connect passionate entrepreneurs with supportive backers who believe in the power of local innovation and economic growth.
-            <br /><br />
-            Whether you're starting a homestay in the hills, a tech startup in the city, or a sustainable farm in the valleys, SajhaBiz provides the tools, visibility, and funding support you need to bring your business to life.
-            <br /><br />
-            Together, we are building a stronger, self-reliant Nepal — one idea, one business, one contribution at a time.
+        </div>
+
+        {/* Card Body / Description */}
+        <div className="p-6 sm:p-8 text-center">
+          <p className="text-base leading-relaxed text-gray-700 dark:text-gray-300 mb-6">
+            SajhaBiz empowers local Nepali businesses through community-driven crowdfunding. We connect innovative ideas with passionate supporters to foster sustainable growth and positive impact across the nation.
           </p>
-          <br />
-          <div className="flex justify-end">
-            <Button
-              href="/aboutus"
-              style={{ width: 200, height: 45 }}
-              className="bg-red-800 hover:bg-red-600 transition-transform duration-300 hover:scale-105"
-            >
-              READ MORE ABOUT US
-            </Button>
-          </div>
+
+          {/* Call to Action Button */}
+          <a
+            href="/aboutus"
+            className="inline-block bg-emerald-700 text-white px-6 py-3 rounded-full shadow-lg 
+                       hover:bg-emerald-800 transition duration-300 transform hover:scale-105 
+                       font-semibold text-base border-2 border-emerald-700 dark:border-emerald-900"
+          >
+            Learn More
+          </a>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
-export default Aboutus;
+export default AboutUs;

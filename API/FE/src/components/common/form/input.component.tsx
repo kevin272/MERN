@@ -150,8 +150,8 @@ export const StatusSelectComponent = ({ control, name, errMsg=""}: SelectOptionP
         return(<>
         <SelectComponent
          options={[
-        { label: "Publish", value: "active" },
-        { label: "Unpublish", value: "inactive" }
+        { label: "Published", value: "active" },
+        { label: "Unpublished", value: "inactive" }
       ]}
       control={control}
       name={name}
