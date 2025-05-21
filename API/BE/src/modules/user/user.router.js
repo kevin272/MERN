@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { userCreateDTO } = require('./user.request');
 const { loginCheck } = require('../../middlewares/auth.middleware');
-const { hasPermission } = require('../../middlewares/rbac.miiddleware');
+const { hasPermission } = require('../../middlewares/rbac.middleware');
 
 // set path middleware
 const { setPath } = require('../../middlewares/uploader.middleware');

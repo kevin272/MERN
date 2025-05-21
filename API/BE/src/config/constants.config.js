@@ -12,8 +12,11 @@ const UserRoles = {
 }
 
 const statusType ={
+    PENDING:'pending',
     ACTIVE:'active',
-    INACTIVE:'inactive'
+    INACTIVE:'inactive',
+    SUCCESSFUL:'successful',
+    FAILED:'failed',
 }
 
 module.exports = {

@@ -8,9 +8,15 @@ require('./db.config');
 
 // importing router config
 const router = require('./router.config');
+const cors = require('cors');
 
 
-
+app.use(cors({
+    origin: 'http://localhost:5173',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, // If you need to handle cookies across origins
+    allowedHeaders: 'Content-Type, Authorization',
+}));
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(express.urlencoded({extended:true}));

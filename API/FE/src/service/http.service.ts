@@ -1,5 +1,5 @@
 import { axiosInstance } from "../config/axois.config";
-import type { SearchParams } from "../config/constants";
+import { SearchParams } from "../config/constants";
 
 interface HeaderConfigProps {
   auth?: boolean;

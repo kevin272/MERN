@@ -1,0 +1,11 @@
+<svg width="200" height="60" viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <rect width="400" height="120" rx="20" fill="#F4F4F4"/>
+  <circle cx="60" cy="60" r="35" fill="#4CAF50"/>
+  <path d="M60 45L70 65H50L60 45Z" fill="white"/>
+  <text x="110" y="70" font-family="Arial, sans-serif" font-size="32" fill="#333" font-weight="bold">
+    SajhaBiz
+  </text>
+  <text x="110" y="95" font-family="Arial, sans-serif" font-size="14" fill="#777">
+    Empower Ideas Together
+  </text>
+</svg>

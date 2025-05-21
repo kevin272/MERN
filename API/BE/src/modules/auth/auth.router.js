@@ -1,4 +1,4 @@
-const { hasPermission } = require('../../middlewares/rbac.miiddleware');
+const { hasPermission } = require('../../middlewares/rbac.middleware');
 const { uploadFile } = require('../../middlewares/uploader.middleware');
 const authcontroller = require('./auth.controller');
 const {setPath} = require('../../middlewares/uploader.middleware');
@@ -14,10 +14,9 @@ const authRouter = require('express').Router();
 authRouter.post('/register',setPath(`user`),uploadFile().single('profile'),authcontroller.registerUser)
 
 
-authRouter.post('/login',bodyValidator(LoginDTO),authcontroller.loginUser);
+authRouter.post('/signin',bodyValidator(LoginDTO),authcontroller.loginUser);
 
 authRouter.get('/me',loginCheck,authcontroller.getUser);
-
 
 
 authRouter.get('/activate/:token',authcontroller.activateUser);
@@ -27,7 +26,4 @@ authRouter.get('/resend-activation-token/:token ',hasPermission(['admin','seller
 authRouter.get('/refresh-token',authcontroller.refreshToken)
 
 
-
-
-module.exports = authRouter
-;
+module.exports = authRouter;

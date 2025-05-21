@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { ReactNode } from "react";
 import { NavLink } from "react-router-dom";
 import {FaPlus} from "react-icons/fa";
 const Heading1 = ({ children }: { children: ReactNode }) => {
