@@ -3,8 +3,8 @@ import Layout from "../layout/layout";
 import Landingpage from "../pages/landing";
 import {Signin, ForgotPassword} from "../pages/signin/signin";
 import Contact from "../pages/contactpage";
-import Aboutuspage from  "../pages/About Us"
-import { BlogsCreatePage, Blogslistingpage, BlogsEditPage } from "../pages/blogs/index";
+import Aboutuspage from "../pages/About Us";
+import { CampaignCreatePage, Campaignlistingpage, CampaignEditPage } from "../pages/campaign/index";
 import { useEffect, useState } from "react";
 import AuthContext from "../context/auth.context";
 import authSvc from "../pages/auth/auth.service";
@@ -13,14 +13,11 @@ import { AdminDashboard } from "../pages/dashboard";
 import CheckPermission from "./rbac.config";
 import LoadingComponent from "../components/common/loading/loading.component";
 import Errorpage from "../components/common/error/notfounderror";
-import { TeamCreatePage, TeamEditPage, TeamListingPage } from "../pages/Our Team/exporting";
-import BlogPage from "../pages/blogs/blogspage";
+import CampaignPage from "../pages/campaign/campaignpage";
 import ResetPassword from "../pages/signin/reset-password.page";
 import { PracticeCreatePage, PracticeEditPage, PracticeListingPage } from "../pages/Areasofpractice";
 import UserActivation from "../pages/auth/activate/activate.user.page";
-import Ourteamcomponent from "../components/Our Team/ourteamcard";
-import BlogOverview from "../pages/blogs/blogs.overview.component";
-import TeamOverview from "../pages/Our Team/team.overview.component";
+import CampaignOverview from "../pages/campaign/campaign.overview.component";
 import AreasOfPracticeComponentforpage from "../pages/Areasofpractice/practice.page.component";
 import PracticeOverview from "../pages/Areasofpractice/practice.overview";
 
@@ -62,14 +59,11 @@ export const Routerconfig = () => {
               <Route index element={<Landingpage />} />
               <Route path="/aboutus" element={<Aboutuspage />} />
 
-              <Route path="/ourteam" element={<Ourteamcomponent />} />
-              <Route path="/ourteam/:id" element={<TeamOverview />} />
-
               <Route path="/areaofpractice" element={<AreasOfPracticeComponentforpage />} />
               <Route path="/areaofpractice/:id" element={< PracticeOverview/>} />
 
-              <Route path="/blogs" element={<BlogPage />} />
-              <Route path="/blogs/:id" element={<BlogOverview/>} />
+              <Route path="/campaign" element={<CampaignPage />} />
+              <Route path="/campaign/:id" element={<CampaignOverview/>} />
 
               <Route path="/contact" element={<Contact />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -85,13 +79,10 @@ export const Routerconfig = () => {
 
               <Route index element={<AdminDashboard />} />
               <Route path="*" element={<Errorpage url="/admin" label="Go To Dashboard" />} />
-              <Route path="blogs" element={<Blogslistingpage />} />
-              <Route path="blogs/create" element={<BlogsCreatePage />} />
-              <Route path="blogs/edit/:id" element={<BlogsEditPage />} />
+              <Route path="campaign" element={<Campaignlistingpage />} />
+              <Route path="campaign/create" element={<CampaignCreatePage />} />
+              <Route path="campaign/edit/:id" element={<CampaignEditPage />} />
               
-              <Route path="teammembers" element={<TeamListingPage/>} />
-              <Route path="teammembers/create" element={<TeamCreatePage/>} />
-              <Route path="teammembers/edit/:id" element={<TeamEditPage/>} />
 
               <Route path="areasofpractice" element={<PracticeListingPage />} />
               <Route path="areasofpractice/create" element={<PracticeCreatePage />} />

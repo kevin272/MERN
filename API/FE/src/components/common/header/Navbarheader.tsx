@@ -1,6 +1,6 @@
-import { Button, Navbar, NavbarToggle, NavbarCollapse } from "flowbite-react";
+import { Button, Navbar } from "flowbite-react";
 import { NavLink, useNavigate } from "react-router-dom";
-import Logo from "../../assets/public/logo.svg";
+import Logo from "../../../assets/logo.svg";
 import { useState, useEffect } from "react";
 import authSvc from "../../../pages/auth/auth.service";
 
@@ -18,17 +18,17 @@ export const Homeheader = () => {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem('_at');
+    const token = localStorage.getItem("_at");
     if (token) {
       getLoggedInUser();
     }
   }, []);
 
   return (
-    <Navbar fluid className="bg-black h-20 sm:h-32 relative z-50">
-      <a href="https://legacylegal.com.np" className="flex items-center">
-        <img src={Logo} className="h-16 w-32 sm:h-28 sm:w-64" alt="LLS Logo" />
-      </a>
+    <Navbar fluid className="bg-white shadow-md h-20 sm:h-24 px-4 sm:px-8">
+      <Navbar.Brand href="/">
+        <img src={Logo} className="h-12 sm:h-16" alt="LLS Logo" />
+      </Navbar.Brand>
 
       <div className="flex items-center gap-4 md:order-2">
         {loggedInUser ? (
@@ -36,14 +36,16 @@ export const Homeheader = () => {
             <NavLink
               to={`/${loggedInUser.role}`}
               className={({ isActive }) =>
-                `flex items-center gap-2 text-[15px] ${isActive ? "text-red-800" : "text-white"}`
+                `flex items-center gap-2 text-sm font-medium ${
+                  isActive ? "text-green-600" : "text-blue-700"
+                }`
               }
             >
               {loggedInUser.profilePic && (
                 <img
                   src={loggedInUser.profilePic}
                   alt="Profile"
-                  className="w-8 h-8 rounded-full object-cover"
+                  className="w-8 h-8 rounded-full object-cover border-2 border-blue-500"
                 />
               )}
               {loggedInUser.fullname}
@@ -52,9 +54,7 @@ export const Homeheader = () => {
             {loggedInUser.role === "admin" && (
               <Button
                 onClick={() => navigate("/admin")}
-                color="failure"
-                className="w-[150px] h-[45px] bg-red-800"
-                pill
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm"
               >
                 Admin Panel
               </Button>
@@ -63,67 +63,36 @@ export const Homeheader = () => {
         ) : (
           <Button
             onClick={() => navigate("/signin")}
-            color="failure"
-            className="w-[150px] h-[45px] bg-red-800"
-            pill
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm"
           >
             Sign In
           </Button>
         )}
 
-        <NavbarToggle className="text-white focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-opacity-50" />
+        <Navbar.Toggle className="text-blue-700 focus:outline-none" />
       </div>
 
-      <NavbarCollapse className="decoration-white bg-black text-center z-50">
-        <NavLink
-          to="/"
-          className={({ isActive }) =>
-            `block text-[15px] p-2 ${isActive ? "text-red-800" : "text-white"}`
-          }
-        >
-          HOME
-        </NavLink>
-        <NavLink
-          to="/aboutus"
-          className={({ isActive }) =>
-            `block text-[15px] p-2 ${isActive ? "text-red-800" : "text-white"}`
-          }
-        >
-          ABOUT US
-        </NavLink>
-        <NavLink
-          to="/ourteam"
-          className={({ isActive }) =>
-            `block text-[15px] p-2 ${isActive ? "text-red-800" : "text-white"}`
-          }
-        >
-          OUR TEAM
-        </NavLink>
-        <NavLink
-          to="/areaofpractice"
-          className={({ isActive }) =>
-            `block text-[15px] p-2 ${isActive ? "text-red-800" : "text-white"}`
-          }
-        >
-          AREAS OF PRACTICE
-        </NavLink>
-        <NavLink
-          to="/blogs"
-          className={({ isActive }) =>
-            `block text-[15px] p-2 ${isActive ? "text-red-800" : "text-white"}`
-          }
-        >
-          BLOGS
-        </NavLink>
-        <NavLink
-          to="/contact"
-          className={({ isActive }) =>
-            `block text-[15px] p-2 ${isActive ? "text-red-800" : "text-white"}`
-          }
-        >
-          CONTACT
-        </NavLink>
-      </NavbarCollapse>
+      <Navbar.Collapse className="bg-white text-center mt-4 sm:mt-0">
+        {[
+          { path: "/", label: "HOME" },
+          { path: "/aboutus", label: "ABOUT US" },
+          { path: "/areaofpractice", label: "AREAS OF PRACTICE" },
+          { path: "/campaign", label: "CAMPAIGNS" },
+          { path: "/contact", label: "CONTACT" },
+        ].map(({ path, label }) => (
+          <NavLink
+            key={path}
+            to={path}
+            className={({ isActive }) =>
+              `block px-3 py-2 text-sm font-medium rounded-md ${
+                isActive ? "text-green-600" : "text-blue-700"
+              } hover:text-green-600 transition-colors`
+            }
+          >
+            {label}
+          </NavLink>
+        ))}
+      </Navbar.Collapse>
     </Navbar>
   );
 };

@@ -1,39 +1,46 @@
 import Heading1 from "../common/title";
 import { Button } from "flowbite-react";
-import logo from "../../assets/public/logo.svg";
-const Aboutus =() => {
-    return(
-      
-        <>
-        <br/>
-        
-        <Heading1>About Us</Heading1>
-        <br/>
-        <div className="flex items-center justify-between p-8 bg-gray-100">
-            <div className="w-1/2">
-                <img 
-                    src={logo}
-                    alt="About Us" 
-                    className="w-3/4 h-auto rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
-                />
-            </div>
-            <div className="w-1/2 pl-8">
-                <h2 className="text-[30px] font-bold mb-4 font-serif">A Tradition of Excellence: 40 Years of Legal Expertise in Nepal<br/></h2>
-                <p className="text-lg text-gray-700 text-justify">
-                Since 1984, Legacy Legal Services has been a distinguished provider of legal expertise in Nepal, offering more than 40 years of trusted counsel and advocacy. Our firm’s name, Legacy, signifies our enduring commitment to excellence and the aspiration to pass on a tradition of trust, integrity, and legal expertise to future generations.
+import logo from "../../assets/logo.svg";
 
-We focus primarily on litigation, handling complex disputes across diverse sectors. Additionally, we provide representation in domestic and international arbitration, ensuring that our clients benefit from efficient dispute resolution, both locally and abroad.<br/> </p>
-    <br/> 
-    <div className="flex justify-end"> <Button href="/aboutus" style={{width:200, height:45}} className="bg-red-800 size-3/12 hover:bg-red-600 transition-transform duration-300 hover:scale-105">READ MORE ABOUT US</Button>
-    </div>
-               
-                
-            </div>
+const Aboutus = () => {
+  return (
+    <>
+      <br />
+      <Heading1>About Us</Heading1>
+      <br />
+      <div className="flex flex-col md:flex-row items-center justify-between p-8 bg-gray-100">
+        <div className="md:w-1/2 mb-6 md:mb-0">
+          <img
+            src={logo}
+            alt="SajhaBiz"
+            className="w-3/4 h-auto rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
+          />
         </div>
-        
-       
-        </>
-    
-    )
-}
+        <div className="md:w-1/2 md:pl-8">
+          <h2 className="text-[30px] font-bold mb-4 font-serif">
+            Empowering Local Dreams: Crowdfunding for Nepal’s Businesses
+          </h2>
+          <p className="text-lg text-gray-700 text-justify">
+            SajhaBiz is a community-powered crowdfunding platform built to uplift and empower small and local businesses across Nepal. Our mission is to connect passionate entrepreneurs with supportive backers who believe in the power of local innovation and economic growth.
+            <br /><br />
+            Whether you're starting a homestay in the hills, a tech startup in the city, or a sustainable farm in the valleys, SajhaBiz provides the tools, visibility, and funding support you need to bring your business to life.
+            <br /><br />
+            Together, we are building a stronger, self-reliant Nepal — one idea, one business, one contribution at a time.
+          </p>
+          <br />
+          <div className="flex justify-end">
+            <Button
+              href="/aboutus"
+              style={{ width: 200, height: 45 }}
+              className="bg-red-800 hover:bg-red-600 transition-transform duration-300 hover:scale-105"
+            >
+              READ MORE ABOUT US
+            </Button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
 export default Aboutus;

@@ -1,6 +1,6 @@
 const { fileFilterType } = require('../../config/constants.config');
 const { loginCheck } = require('../../middlewares/auth.middleware');
-const { hasPermission } = require('../../middlewares/rbac.miiddleware');
+const { hasPermission } = require('../../middlewares/rbac.middleware');
 const { setPath, uploadFile } = require('../../middlewares/uploader.middleware');
 const { bodyValidator } = require('../../middlewares/validator.middleware');
 const { InvestorCreateDTO , InvestorUpdateDTO} = require('./investor.request');

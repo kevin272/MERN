@@ -1,4 +1,4 @@
-const { hasPermission } = require('../../middlewares/rbac.miiddleware');
+const { hasPermission } = require('../../middlewares/rbac.middleware');
 const { uploadFile } = require('../../middlewares/uploader.middleware');
 const authcontroller = require('./auth.controller');
 const {setPath} = require('../../middlewares/uploader.middleware');

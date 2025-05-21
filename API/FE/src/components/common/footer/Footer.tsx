@@ -38,7 +38,7 @@ const Footercomponent=()=>{
         </div>
         <Footer.Divider />
         <div className="w-full sm:flex sm:items-center sm:justify-between md:justify-center">
-          <Footer.Copyright className="text-white" href="facebook.com/jenithacharya" by="Jenith Sharma Acharya" year={2024} />
+          <Footer.Copyright className="text-white" href="facebook.com/kebinmalla" by="Kebin Malla" year={2025} />
           
         </div>
       </div>

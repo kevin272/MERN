@@ -1,5 +1,5 @@
 import { Button } from "flowbite-react";
-import video from "../../assets/public/Lawyer video background 2 - Nature Relaxing Music (720p, h264, youtube).mp4";
+import video from "../../assets/public/video.mp4";
 
 const Herosection = () => {
   return (

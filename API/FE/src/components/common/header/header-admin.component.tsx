@@ -1,5 +1,5 @@
 import { HiMenu, HiUser } from "react-icons/hi";
-import logo from  "../../../assets/public/logo.svg";
+import logo from "../../../assets/logo.svg"; // Assuming logo is in the correct path
 import { NavLink, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import AuthContext from "../../../context/auth.context";
