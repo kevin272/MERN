@@ -1,4 +1,3 @@
-// src/pages/Our Team/user.edit-page.tsx
 import Heading1 from "../../components/common/title";
 import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
@@ -29,7 +28,6 @@ const UserEditPage = () => {
           setFormData({
             ...response.result,
             role: { label: response.result.role, value: response.result.role },
-            // Ensure phone is an array when setting form data for edit
             phone: response.result.phone,
           });
         } else {
@@ -54,38 +52,44 @@ const UserEditPage = () => {
       const submitData = {
         ...data,
         role: data.role.value,
-        phone: [data.phone], // Ensure phone is sent as an array
+        phone: [data.phone],
       };
       await UserSvc.updateUser(id!, submitData);
       toast.success("User (Team member) updated successfully");
       navigate("/admin/users");
     } catch (exception: any) {
-      console.error("Error while updating user (team member):", exception);
-      toast.error(exception.response?.data?.message || "Error while updating user (team member)");
+      console.error("Error updating user:", exception);
+      toast.error(exception.response?.data?.message || "Error updating user");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <>
-      <div className="overflow-x-auto mt-5 mb-5 ml-2 mr-2">
-        <Heading1>Edit User (Team Member)</Heading1>
-        <br />
-        <hr />
-      </div>
-
-      <div>
-        <div className="py-3 px-4 lg:py-14">
-          <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white"></h2>
-          {loading ? (
-            <LoadingComponent />
-          ) : (
-            formData && <TeamFormComponent initialData={formData} submitEvent={submitEvent} loading={loading} />
-          )}
+    <div className="bg-white dark:bg-gray-900 py-6 sm:py-8 lg:py-12"> 
+      <div className="max-w-screen-md px-4 md:px-8 mx-auto">
+        <div className="mb-8 sm:mb-12 md:mb-16">
+          <h2 className="text-2xl font-semibold text-center text-green-600 dark:text-green-500"> 
+            Edit Member
+          </h2>
+          <p className="text-center text-gray-500 dark:text-gray-400 md:text-lg"> 
+            Modify user details here.
+          </p>
         </div>
+
+        {loading ? (
+          <div className="flex justify-center items-center h-48"> 
+            <LoadingComponent />
+          </div>
+        ) : (
+          formData && (
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6"> 
+              <TeamFormComponent initialData={formData} submitEvent={submitEvent} loading={loading} />
+            </div>
+          )
+        )}
       </div>
-    </>
+    </div>
   );
 };
 

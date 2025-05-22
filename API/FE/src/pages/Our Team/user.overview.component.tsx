@@ -1,4 +1,3 @@
-// src/pages/Our Team/user.overview.component.tsx
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import UserSvc from "./user.service"; // Updated import

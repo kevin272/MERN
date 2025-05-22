@@ -2,25 +2,24 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faTwitter, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "flowbite-react";
-import UserSvc from "../../pages/Our Team/user.service"; // Updated import
+import UserSvc from "../../pages/Our Team/user.service"; 
 import { useEffect, useState } from "react";
 import LoadingComponent from "../../components/common/loading/loading.component";
-import { Link } from "react-router-dom"; // Import Link for navigation
+import { Link } from "react-router-dom"; 
 
 const OurTeamComponent = () => {
-  const [members, setMembers] = useState<any[] | null>(null); // Renamed state to 'members' (still representing users)
-  const [loading, setLoading] = useState(true); // Added loading state
+  const [members, setMembers] = useState<any[] | null>(null);
+  const [loading, setLoading] = useState(true); //loading state
   const fetchTeamMembers = async () => {
-    try {
-      // *** Updated API call to /user/list-home ***
-      const response: any = await UserSvc.getTeamMembersForHome();
-      console.log("Public Team Members API Response:", response.result);
-      setMembers(response.result || []); // Assuming response.result contains the array
-      setLoading(false); // Set loading to false when data is received
-    } catch (error) {
-      console.error("Error fetching team members:", error);
-      setLoading(false); 
-    }
+  try {
+    const response: any = await UserSvc.getTeamMembersForHome();
+    console.log("Public Team Members API Response:", response.result);
+    setMembers(response.result || []);
+    setLoading(false); 
+  } catch (error) {
+    console.error("Error fetching team members:", error);
+    setLoading(false);
+  }
   };
 
   useEffect(() => {
@@ -43,12 +42,12 @@ const OurTeamComponent = () => {
               <LoadingComponent/>
             ) : (
               members && Array.isArray(members) && members.length > 0 ? (
-                members.map((member: any) => ( // Removed index, assuming _id is unique
+                members.map((member: any) => ( 
                   <div
                     key={member._id}
                     className="bg-white text-red-800 shadow-lg rounded-lg p-6 transition transform hover:scale-105 hover:shadow-xl"
                   >
-                   <Link to={`/ourteam/${member._id}`}> {/* Updated link to user overview */}
+                   <Link to={`/ourteam/${member._id}`}>
                       <img
                         src={member.image} 
                         alt={member.name}
@@ -56,10 +55,9 @@ const OurTeamComponent = () => {
                         onError={(e:any) => { e.target.onerror = null; e.target.src="https://placehold.co/400x288/cccccc/000000?text=No+Image" }}
                       />
                     </Link>
-                    <h2 className="text-xl font-semibold mt-4">{member.name}</h2> {/* Use 'name' */}
-                    <p className="text-gray-800">{member.role}</p> {/* Use 'role' */}
-                    <p className="text-sm text-gray-600 mt-2">{member.expertise || member.bio}</p> {/* Use 'expertise' or 'bio' */}
-
+                    <h2 className="text-xl font-semibold mt-4">{member.name}</h2>
+                    <p className="text-gray-800">{member.role}</p> 
+                    <p className="text-sm text-gray-600 mt-2">{member.expertise || member.bio}</p> 
                     <div className="flex justify-center gap-4 mt-4">
                       {member.facebook && ( 
                         <a

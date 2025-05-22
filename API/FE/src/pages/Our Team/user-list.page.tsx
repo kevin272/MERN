@@ -1,4 +1,3 @@
-// src/pages/Our Team/user-list.page.tsx
 import { Badge, Table, TextInput } from "flowbite-react";
 import { Pagination } from "flowbite-react";
 import { HeadingWithLink } from "../../components/common/title";
@@ -6,38 +5,36 @@ import { useCallback, useEffect, useState } from "react";
 import RowSkeleton from "../../components/common/table/table-skeleton.component";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
-import UserSvc from "./user.service"; // Updated import
+import UserSvc from "./user.service";
 import { SearchParams } from "../../config/constants";
 import { ActionButtons } from "../../components/table/table-action.component";
 
-const UserListingPage = () => { // Renamed component
+const UserListingPage = () => {
   const [pagination, setPagination] = useState({
     currentPage: 1,
-    totalpages: 1, // Start with 1 to avoid division by zero or empty pagination
+    totalpages: 1,
   });
 
-  const [users, setUsers] = useState<any[]>([]); // Renamed state from 'teams' to 'users'
+  const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState<string>(''); // Renamed for consistency
+  const [search, setSearch] = useState<string>('');
 
   const getAllUsers = useCallback(async ({ page = 1, limit = 5, search = "" }: SearchParams) => {
     setLoading(true);
     try {
-      // *** Updated API call to /user ***
-      const response: any = await UserSvc.getUsers({ page, limit, search }); 
-
-      setUsers(response.result || []); // Assuming response.result contains the array of users
+      const response: any = await UserSvc.getUsers({ page, limit, search });
+      setUsers(response.result || []);
       setPagination({
-        currentPage: response.meta.page, // Assuming backend sends 'page'
-        totalpages: Math.ceil(response.meta.total / response.meta.limit), // Assuming backend sends 'total' and 'limit'
+        currentPage: response.meta.page,
+        totalpages: Math.ceil(response.meta.total / response.meta.limit),
       });
     } catch (exception) {
-      console.error("Error while fetching user list:", exception);
-      toast.error("Error while fetching user list");
+      console.error("Error fetching user list:", exception);
+      toast.error("Error fetching user list");
     } finally {
       setLoading(false);
     }
-  }, []); // Empty dependency array for stability
+  }, []);
 
   useEffect(() => {
     getAllUsers({ page: 1, limit: 5 });
@@ -46,7 +43,7 @@ const UserListingPage = () => { // Renamed component
   useEffect(() => {
     const timeout = setTimeout(() => {
       getAllUsers({ page: 1, limit: 5, search });
-    }, 500); // Debounce time
+    }, 500);
 
     return () => clearTimeout(timeout);
   }, [search, getAllUsers]);
@@ -72,14 +69,13 @@ const UserListingPage = () => { // Renamed component
       });
 
       if (result.isConfirmed) {
-        // *** Updated API call to /user/ ***
-        await UserSvc.deleteUser(id); // Using the specific deleteUser method
+        await UserSvc.deleteUser(id);
         toast.success("User (Team member) deleted successfully");
         getAllUsers({ page: pagination.currentPage, limit: 5, search: search });
       }
     } catch (exception) {
-      console.error("Error while deleting user (team member):", exception);
-      toast.error("Error while deleting user (team member)");
+      console.error("Error deleting user:", exception);
+      toast.error("Error deleting user");
     }
   };
 
@@ -87,9 +83,9 @@ const UserListingPage = () => { // Renamed component
     <>
       <div className="overflow-x-auto mt-5 mb-5 ml-2 mr-2">
         <HeadingWithLink
-          title="User Management" // Updated title
-          link="/admin/users/create" // Updated link
-          btntxt="Add User" // Updated button text
+          title="Team Management"
+          link="/admin/users/create"
+          btntxt="Add User"
         />
         <br />
         <hr />
@@ -100,7 +96,7 @@ const UserListingPage = () => { // Renamed component
           className="w-1/4"
           type="search"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
-          value={search || ''} // Controlled component
+          value={search || ''}
           placeholder="Search users..."
         />
       </div>
@@ -108,17 +104,17 @@ const UserListingPage = () => { // Renamed component
       <div className="overflow-x-auto">
         <Table>
           <Table.Head>
-            <Table.HeadCell className="bg-red-800 text-white">
+            <Table.HeadCell className="bg-emerald-800 text-white">
               Full Name
             </Table.HeadCell>
-            <Table.HeadCell className="bg-red-800 text-white">
+            <Table.HeadCell className="bg-emerald-800 text-white">
               Email
             </Table.HeadCell>
-            <Table.HeadCell className="bg-red-800 text-white">
+            <Table.HeadCell className="bg-emerald-800 text-white">
               Role
             </Table.HeadCell>
-            <Table.HeadCell className="bg-red-800 text-white">
-              Action
+            <Table.HeadCell className="bg-emerald-800 text-white">
+              Actions
             </Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
@@ -126,24 +122,24 @@ const UserListingPage = () => { // Renamed component
               <RowSkeleton rows={5} cols={4} />
             ) : (
               <>
-                {users && users.length > 0 ? ( // Use 'users' state
-                  users.map((row: any) => ( // Removed index, assuming _id is unique
+                {users && users.length > 0 ? (
+                  users.map((row: any) => (
                     <Table.Row
                       className="bg-white dark:border-gray-700 dark:bg-gray-800"
                       key={row._id}
                     >
                       <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                        {row.name} {/* Assuming user model has 'name' */}
+                        {row.name}
                       </Table.Cell>
-                      <Table.Cell>{row.email} </Table.Cell>
+                      <Table.Cell>{row.email}</Table.Cell>
                       <Table.Cell>
-                        <Badge color={row.role === "admin" ? "green" : "blue"}>
+                        <Badge color={row.role === "admin" ? "green" : "red"}>
                           {row.role}
                         </Badge>
                       </Table.Cell>
                       <Table.Cell className="flex gap-3">
                         <ActionButtons
-                          editUrl={`/admin/users/edit/${row._id}`} // Updated edit URL
+                          editUrl={`/admin/users/edit/${row._id}`}
                           deleteAction={deleteData}
                           rowId={row._id}
                         />

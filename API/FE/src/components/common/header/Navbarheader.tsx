@@ -1,6 +1,6 @@
 import { Button, Navbar } from "flowbite-react";
 import { NavLink, useNavigate } from "react-router-dom";
-import Logo from "../../../assets/logo.svg";
+import Logo from "../../../assets/logo2.svg";
 import { useState, useEffect } from "react";
 import authSvc from "../../../pages/auth/auth.service";
 

@@ -1,5 +1,5 @@
 import { HiMenu, HiUser } from "react-icons/hi";
-import logo from "../../../assets/logo.svg"; // Assuming logo is in the correct path
+import logo from "../../../assets/logo2.svg"; // Assuming logo is in the correct path
 import { NavLink, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import AuthContext from "../../../context/auth.context";
@@ -34,7 +34,7 @@ const AdminHeader = () => {
 
           {/* Logo added here */}
           <NavLink to="/">
-            <img src={logo} className="mr-3 h-30 w-40" alt="Admin Logo" />
+            <img src={logo} className="mr-3 h-12 sm:h-16" alt="Admin Logo" />
           </NavLink>
         </div>
         <div className="flex items-center lg:order-2">
