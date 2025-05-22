@@ -1,4 +1,5 @@
 import Breadcrumbnavigation from "../../components/common/breadcrumb navigation/breadcrumb component";
+import logo from "../../assets/logo.svg"; // Adjust the path as necessary
 
 const AboutUs = () => {
   return (
@@ -12,7 +13,7 @@ const AboutUs = () => {
           {/* Company Introduction */}
           <div className="bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-xl border border-emerald-100 dark:border-gray-700 mb-12">
             <img
-              src="https://placehold.co/120x120/d1fae5/065f46?text=SajhaBiz+Logo" // Green-themed placeholder logo
+              src={logo} // Adjust the path as necessary
               alt="SajhaBiz Logo"
               className="mx-auto mb-6 w-32 h-32 object-cover rounded-full shadow-lg border-4 border-emerald-300 dark:border-emerald-700"
             />

@@ -1,70 +1,119 @@
 const mongoose = require('mongoose');
-const { UserRoles,statusType } = require('../../config/constants.config');
-const { number } = require('joi');
-const { string } = require('joi');
+const bcrypt = require('bcryptjs'); 
+const { randomStringGenerator } = require('../../utils/helper');
+const { statusType } = require('../../config/constants.config');
 
-const AddressSchema = new mongoose.Schema({
-    proviance:{
-        type: String,
-        enum: ['gandaki', 'karnali', 'lumbini', 'sudurpaschim', 'bagmati', 'narayani', 'janakpur', 'sagarmatha', 'koshi', 'mechi']
-    },
-    district:{
-        type: String,
-        
-    },
-    muncipality:{
-        type: String,
-        
-    
-    },
-    wardNumber:Number,
-    houseAddress:String
-});
-
-const UserSchema = new mongoose.Schema({
-    name:{
-        type: String,
-        
-    },
-    email:{
+const userSchema = new mongoose.Schema({
+    name: {
         type: String,
         required: true,
-        unique: true
+        minlength: 2,
+        maxlength: 50,
+        trim: true
     },
-    password:{
+    email: {
         type: String,
         required: true,
+        unique: true, 
+        lowercase: true,
+        trim: true,
+        match: [/.+@.+\..+/, 'Please fill a valid email address'] 
     },
-    role:{
+    password: {
         type: String,
-        enum: [...Object.values(UserRoles)],
-        default: UserRoles.CUSTOMER
+        required: true,
+        minlength: 6
     },
-    activationToken:String,
-    activatedFor:Date,
-    phone:[String],
-    address:{
-        permanentAddress:AddressSchema,
-        temporaryAddress:AddressSchema
+    role: {
+        type: String,
+        enum: ['admin', 'member', 'user'],
+        default: 'user',
+        required: true
     },
-    forgotToken:String,
-    forgotFor:Date,
-    status:{
-        type:String,
-       enum: [...Object.values(statusType)],
-       default : statusType.INACTIVE
+    status: {
+        type: String,
+        enum: [statusType.PENDING, statusType.ACTIVE, statusType.INACTIVE], 
+        default: statusType.PENDING,
+        required: true
     },
-    image:String,
-    createdBy:{
-        type: mongoose.Schema.Types.ObjectId,
+    activationToken: {
+        type: String,
+        default: null
+    },
+    activatedFor: {
+        type: Date,
+        default: null
+    },
+    title: { 
+        type: String,
+        maxlength: 100,
+        trim: true,
+        default: null
+    },
+    expertise: {
+        type: String,
+        maxlength: 200,
+        trim: true,
+        default: null
+    },
+    bio: { 
+        type: String,
+        maxlength: 1000,
+        trim: true,
+        default: null
+    },
+    image: { 
+        type: String,
+        default: null 
+    },
+    facebook: {
+        type: String,
+        trim: true,
+        default: null
+    },
+    twitter: {
+        type: String,
+        trim: true,
+        default: null
+    },
+    linkedin: {
+        type: String,
+        trim: true,
+        default: null
+    },
+    phone: {
+        type: String,
+        default: null,
+    },
+    address: {
+        type: String,
+        maxlength: 255,
+        trim: true,
+        default: null
+    },
+    createdBy: {
+        type: mongoose.Types.ObjectId,
         ref: 'User',
         default: null
     }
+}, {
+    timestamps: true
+});
 
-},{timestamps: true});
+userSchema.pre('save', async function(next) {
+    if (this.isModified('password')) {
+        this.password = await bcrypt.hash(this.password, 10);
+    }
+    next();
+});
 
+userSchema.pre('save', function(next) {
+    if (this.isNew && this.status === statusType.PENDING && !this.activationToken) {
+        this.activationToken = randomStringGenerator(20);
+        this.activatedFor = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    }
+    next();
+});
 
-
-const UserModel = mongoose.model('User', UserSchema);
-
+const UserModel = mongoose.model('User', userSchema);
 module.exports = UserModel;

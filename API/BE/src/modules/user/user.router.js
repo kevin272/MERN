@@ -1,44 +1,43 @@
 const router = require('express').Router();
-const { userCreateDTO } = require('./user.request');
+const { userCreateDTO, userUpdateDTO } = require('./user.request');
 const { loginCheck } = require('../../middlewares/auth.middleware');
 const { hasPermission } = require('../../middlewares/rbac.middleware');
-
-// set path middleware
-const { setPath } = require('../../middlewares/uploader.middleware');
-
-// importing user controller object
+const { setPath, uploadFile } = require('../../middlewares/uploader.middleware');
 const userController = require('./user.controller');
 const { bodyValidator } = require('../../middlewares/validator.middleware');
 
-// getting fileUploader middleware
-const {uploadFile}= require('../../middlewares/uploader.middleware')
+router.get('/list-home', userController.listForHome);
 
-
-
-
-
-
-
-
-
-
-
-
-// router uses logincheck for all the routes
 router.use(loginCheck);
-// creating routes for user
 
+router.route('/')
+  .get(
+    hasPermission(['admin', 'member']),
+    userController.userLists
+  )
+  .post(
+    hasPermission(['admin']),
+    setPath('user'),
+    uploadFile().single('image'),
+    bodyValidator(userCreateDTO),
+    userController.userCreate
+  );
 
-
-
-    router.route('/')
-    .get(hasPermission,userController.userLists)
-    .post(hasPermission,setPath('user'),uploadFile().single('profile'),bodyValidator(userCreateDTO),userController.userCreate);
-
-  router.route('/:id')
-    .get(userController.userDetailById)
-    .put(userController.userUpdate)
-    .delete(userController.userRemove);
-
+router.route('/:id')
+  .get(
+    hasPermission(['admin', 'member']),
+    userController.userDetailById
+  )
+  .patch(
+    hasPermission(['admin']),
+    setPath('user'),
+    uploadFile().single('image'),
+    bodyValidator(userUpdateDTO),
+    userController.userUpdate
+  )
+  .delete(
+    hasPermission(['admin']),
+    userController.userRemove
+  );
 
 module.exports = router;

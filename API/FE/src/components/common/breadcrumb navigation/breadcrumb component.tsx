@@ -1,22 +1,26 @@
 import React from "react";
-import law from "../../../assets/public/Law.jpg";
+
+
+import greenThemedImage from "../../../assets/breadcrumn.jpg"; 
 
 const Breadcrumbnavigation = ({ children }: { children: React.ReactNode }) => {
   return (
     <div
-      className="relative bg-cover bg-center h-64 flex items-center justify-center text-white"
-      style={{ backgroundImage: `url(${law})` }} 
+      className="relative bg-cover bg-center h-48 sm:h-56 md:h-64 flex items-center justify-center text-white overflow-hidden"
+      style={{ backgroundImage: `url(${greenThemedImage})` }} 
     >
-      {/* Dark Red Overlay */}
-      <div className="absolute inset-0 bg-red-800 opacity-80"></div>
+      {/* Dark Green Overlay */}
+      <div className="absolute inset-0 bg-emerald-800 opacity-80 dark:bg-gray-900 dark:opacity-70"></div>
 
       {/* Content */}
-      <div className="relative text-center">
-        <h1 className="text-4xl font-bold">{String(children).toUpperCase()}</h1>
-        <p className="mt-2 text-lg">
-          <a href="/" className="text-gray-300 hover:text-white">Home</a>
-          <span className="text-gray-400"> / </span>
-          <span className="text-white">{children}</span>
+      <div className="relative z-10 text-center px-4">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white drop-shadow-md">
+          {String(children).toUpperCase()}
+        </h1>
+        <p className="mt-3 text-lg sm:text-xl font-medium">
+          <a href="/" className="text-emerald-200 hover:text-white transition-colors duration-200">Home</a>
+          <span className="text-emerald-400 mx-2">/</span>
+          <span className="text-white font-semibold">{children}</span>
         </p>
       </div>
     </div>
