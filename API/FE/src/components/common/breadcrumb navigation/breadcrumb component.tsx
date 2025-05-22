@@ -1,9 +1,7 @@
 import React from "react";
 
-// You might want to replace this with an actual green-themed abstract image
-// or a pattern that fits your SajhaBiz brand.
-// For now, using a placeholder that suggests growth/nature.
-import greenThemedImage from "../../../assets/breadcrumb.jpg"; // Adjust the path as necessary
+
+import greenThemedImage from "../../../assets/breadcrumn.jpg"; 
 
 const Breadcrumbnavigation = ({ children }: { children: React.ReactNode }) => {
   return (

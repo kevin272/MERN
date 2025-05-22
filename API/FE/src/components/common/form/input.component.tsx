@@ -215,4 +215,18 @@ export const CancelButton = ({ loading = false, children }: { loading: boolean; 
             </button>
         </>
     );
+
+};
+export const RoleSelectComponent = ({ control, name, errMsg }: SelectOptionProps) => {
+  return (
+    <SelectComponent
+      options={[
+        { label: "admin", value: "admin" },
+        { label: "member", value: "member" },
+      ]}
+      control={control}
+      name={name}
+      errMsg={errMsg}
+    />
+  );
 };

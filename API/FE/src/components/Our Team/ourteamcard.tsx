@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faTwitter, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "flowbite-react";
-import TeamSvc from "../../pages/Our Team/team.service";
+import TeamSvc from "../../pages/Our Team/user.service";
 import { useEffect, useState } from "react";
 import Breadcrumbnavigation from "../common/breadcrumb navigation/breadcrumb component";
 import LoadingComponent from "../common/loading/loading.component";
@@ -12,7 +12,7 @@ const OurTeamComponent = () => {
 
   const fetchTeamMembers = async () => {
     try {
-      const response: any = await TeamSvc.getRequest("/member/list-home");
+      const response: any = await TeamSvc.getRequest("/user/list-home");
       setMembers(response.data);
     } catch (error) {
       console.log(error);

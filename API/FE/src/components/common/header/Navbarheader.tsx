@@ -76,7 +76,7 @@ export const Homeheader = () => {
         {[
           { path: "/", label: "HOME" },
           { path: "/aboutus", label: "ABOUT US" },
-          { path: "/areaofpractice", label: "AREAS OF PRACTICE" },
+          { path: "/ourteam", label: "OUR TEAM" },
           { path: "/campaign", label: "CAMPAIGNS" },
           { path: "/contact", label: "CONTACT" },
         ].map(({ path, label }) => (

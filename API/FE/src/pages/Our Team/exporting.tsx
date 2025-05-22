@@ -1,9 +1,9 @@
-import TeamCreatePage from "./team-create";
-import TeamEditPage from "./team.edit-page";
-import TeamListingPage from "./team-list.page";
+import UserCreatePage from "./user-create";
+import UserEditPage from "./user.edit-page";    
+import UserListingPage from "./user-list.page";  
 
 export {
-    TeamCreatePage,
-    TeamEditPage,
-    TeamListingPage
+    UserCreatePage,
+    UserEditPage,
+    UserListingPage
 }
