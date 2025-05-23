@@ -4,7 +4,7 @@ const { hasPermission } = require('../../middlewares/rbac.middleware');
 const { setPath, uploadFile } = require('../../middlewares/uploader.middleware');
 const { loginCheck } = require('../../middlewares/auth.middleware');
 const { bodyValidator } = require('../../middlewares/validator.middleware');
-const { CampaignCreateDTO, CampaignUpdateDTO } = require('./campaign.request');
+const { CampaignCreateDTO, CampaignUpdateDTO, CampaignDonateDTO } = require('./campaign.request');
 const CampaignController = require('./campaign.controller');
 const router = require('express').Router();
 
@@ -37,5 +37,17 @@ router.route('/:id')
         campaignAuth, // Creator or admin can delete
         CampaignController.delete
     );
+
+//Donation route
+router.post('/:campaignId/donate',
+    loginCheck,
+    bodyValidator(CampaignDonateDTO),
+    CampaignController.donateToCampaign
+);
+
+router.get('/user/:userId/donations',
+    loginCheck,
+    CampaignController.getUserDonationHistory
+);
 
 module.exports = router;

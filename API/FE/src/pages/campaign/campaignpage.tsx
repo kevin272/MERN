@@ -91,7 +91,7 @@ const CampaignPage = () => {
                                                 Goal: <span className="text-emerald-700 dark:text-emerald-400">${campaign.goalAmount.toLocaleString()}</span>
                                             </span>
                                             <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
-                                                Raised: <span className="text-emerald-700 dark:text-emerald-400">${campaign.currentAmount.toLocaleString()}</span>
+                                                Raised: <span className="text-emerald-700 dark:text-emerald-400">${campaign.raisedAmount.toLocaleString()}</span>
                                             </span>
                                         </div>
                                         {/* Learn More Button */}

@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import Layout from "../layout/layout";
 import Landingpage from "../pages/landing";
-import {Signin, ForgotPassword} from "../pages/signin/signin";
+import { Signin, ForgotPassword } from "../pages/signin/signin";
 import Contact from "../pages/contactpage";
 import Aboutuspage from "../pages/About Us";
 import { CampaignCreatePage, Campaignlistingpage, CampaignEditPage } from "../pages/campaign/index";
@@ -27,10 +27,10 @@ export const Routerconfig = () => {
 
   const getLoggedInUser = async () => {
     try {
-      setLoading(true)
-      const {data}: any = await authSvc.getRequest('/auth/me', { auth: true });
+      setLoading(true);
+      const { data }: any = await authSvc.getRequest('/auth/me', { auth: true });
       setLoggedInUser(data);
-      
+
     } catch (exception) {
       console.log("Error fetching user:", exception);
     } finally {
@@ -59,38 +59,38 @@ export const Routerconfig = () => {
               <Route index element={<Landingpage />} />
               <Route path="/aboutus" element={<Aboutuspage />} />
 
-              {/* Our Team (now displaying Users) */}
+              {/* Our Team (now displaying Users) - Public Access */}
               <Route path="/ourteam" element={<Ourteamcomponent />} />
-              <Route path="/ourteam/:id" element={<UserOverview />} /> {/* Uses UserOverview */}
+              <Route path="/ourteam/:id" element={<UserOverview />} /> {/* Public access */}
 
-              {/* Campaigns */}
+              {/* Campaigns - Public Access to Overview */}
               <Route path="/campaign" element={<CampaignPage />} />
-              <Route path="/campaign/:id" element={<CampaignOverview/>} />
+              <Route path="/campaign/:id" element={<CampaignOverview />} /> {/* Public access */}
 
               <Route path="/contact" element={<Contact />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password/:token" element={<ResetPassword />} />
-              <Route path="/activate/:token" element={<UserActivation/>} />
+              <Route path="/activate/:token" element={<UserActivation />} />
               <Route path="*" element={<Errorpage url="/" label="Go To Home" />} />
             </Route>
-          
-            {/* Signin Route - outside main layout if it's a full-page login */}
+
+            {/* Signin Route - outside main layout */}
             <Route path="/signin" element={<Signin />} />
 
             {/* Admin Routes - Protected by CheckPermission */}
             <Route path="/admin" element={<CheckPermission allowedBy={['admin', 'member']} children={<AdminLayout />} />}>
               <Route index element={<AdminDashboard />} />
               <Route path="*" element={<Errorpage url="/admin" label="Go To Dashboard" />} />
-              
+
               {/* Campaign Management */}
               <Route path="campaign" element={<Campaignlistingpage />} />
               <Route path="campaign/create" element={<CampaignCreatePage />} />
               <Route path="campaign/edit/:id" element={<CampaignEditPage />} />
-              
+
               {/* User Management (formerly Team Members) */}
-              <Route path="users" element={<UserListingPage/>} /> {/* Updated path and element */}
-              <Route path="users/create" element={<UserCreatePage/>} /> {/* Updated path and element */}
-              <Route path="users/edit/:id" element={<UserEditPage/>} /> {/* Updated path and element */}
+              <Route path="users" element={<UserListingPage />} />
+              <Route path="users/create" element={<UserCreatePage />} />
+              <Route path="users/edit/:id" element={<UserEditPage />} />
             </Route>
           </Routes>
         </AuthContext.Provider>

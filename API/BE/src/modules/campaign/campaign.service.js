@@ -65,6 +65,32 @@ class CampaignService {
             throw error;
         }
     }
+
+    async donateToCampaign(campaignId, userId, amount) {
+        try {
+            const campaign = await CampaignModel.findByIdAndUpdate(
+                campaignId,
+                {
+                    $inc: { raisedAmount: amount },
+                    $push: { donors: { userId, amount } }
+                },
+                { new: true, runValidators: true }
+            ).populate('donors.userId', '_id name email'); 
+
+            return campaign;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getUserDonationHistory(userId) {
+    try {
+        return await CampaignModel.find({ 'donors.userId': userId }, 'title raisedAmount donors')
+            .populate('donors.userId', '_id name'); // Populate user details
+    } catch (error) {
+        throw error;
+    }
+    }
 }
 
 module.exports = new CampaignService();

@@ -19,10 +19,14 @@ const CampaignSchema = new mongoose.Schema({
         required: true,
         min: 1 //  Minimum goal amount
     },
-    currentAmount: {
-        type: Number,
-        default: 0 //  Initially 0
-    },
+    raisedAmount: {  //  New field for total donations
+    type: Number,
+    default: 0  
+  },
+  donors: [{      
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    amount: { type: Number, required: true }
+  }],
     startDate: {
         type: Date,
         required: true
@@ -47,13 +51,14 @@ const CampaignSchema = new mongoose.Schema({
     status: {
         type: String,
         enum: Object.values(statusType), //  e.g., 'pending', 'active', 'successful', 'failed'
-        default: statusType.PENDING //  Or whatever your default is
+        default: statusType.PENDING 
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User', //  Reference to the User model
         required: true
     }
+    
 }, {
     timestamps: true
 });
