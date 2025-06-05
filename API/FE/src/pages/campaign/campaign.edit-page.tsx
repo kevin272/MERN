@@ -11,10 +11,10 @@ import {
 } from "flowbite-react";
 import Heading1 from "../../components/common/title";
 import LoadingComponent from "../../components/common/loading/loading.component";
-import CampaignSvc from "./campaigns.service"; // Import your Campaign Service
+import CampaignSvc from "./campaigns.service"; 
 
 const EditCampaignPage = () => {
-  const [loading, setLoading] = useState(true); // Keep loading true initially
+  const [loading, setLoading] = useState(true); 
   const { id } = useParams(); // Get the campaign ID from the URL
   const [formData, setFormData] = useState<{
     title: string;
@@ -35,15 +35,15 @@ const EditCampaignPage = () => {
     endDate: "",
     category: "",
     image: null,
-    status: "pending", // Or whatever your default status is
+    status: "pending",
   });
   const [error, setError] = useState<string | null>(null); // Add error state
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCampaign = async () => {
-      setLoading(true); // Start loading
-      setError(null); // Clear previous errors
+      setLoading(true);
+      setError(null);
       try {
         if (!id) {
           setError("Campaign ID is missing from the URL.");

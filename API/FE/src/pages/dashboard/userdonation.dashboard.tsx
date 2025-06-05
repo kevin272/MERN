@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import CampaignSvc from '../../pages/campaign/campaigns.service'; 
+import CampaignSvc from '../campaign/campaigns.service';
 import  useAuth  from '../../context/auth.context';
 import LoadingComponent from '../../components/common/loading/loading.component';
 
@@ -50,6 +50,7 @@ const UserDonationDashboard = () => {
                         <tr>
                             <th>Campaign Title</th>
                             <th>Amount Donated</th>
+                            {/* Add other relevant columns */}
                         </tr>
                     </thead>
                     <tbody>
@@ -57,6 +58,7 @@ const UserDonationDashboard = () => {
                             <tr key={donation._id}>
                                 <td>{donation.title}</td>
                                 <td>{donation.donors.find((d: any) => String(d.userId._id) === String(user?.id))?.amount}</td>
+                                {/* Display other donation details */}
                             </tr>
                         ))}
                     </tbody>
