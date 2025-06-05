@@ -1,26 +1,34 @@
-import { Navigate, Route, Routes } from "react-router-dom";
-import Layout from "../layout/layout";
-import Landingpage from "../pages/landing";
-import { Signin, ForgotPassword } from "../pages/signin/signin";
-import Contact from "../pages/contactpage";
-import Aboutuspage from "../pages/About Us";
-import { CampaignCreatePage, Campaignlistingpage, CampaignEditPage } from "../pages/campaign/index";
-import { useEffect, useState } from "react";
-import AuthContext from "../context/auth.context";
-import authSvc from "../pages/auth/auth.service";
-import AdminLayout from "../layout/cms.page";
-import { AdminDashboard } from "../pages/dashboard";
-import CheckPermission from "./rbac.config";
-import LoadingComponent from "../components/common/loading/loading.component";
-import Errorpage from "../components/common/error/notfounderror";
-import CampaignPage from "../pages/campaign/campaignpage";
-import ResetPassword from "../pages/signin/reset-password.page";
-import UserActivation from "../pages/auth/activate/activate.user.page";
-import CampaignOverview from "../pages/campaign/campaign.overview.component";
-import UserOverview from "../pages/Our Team/user.overview.component";
-import Ourteamcomponent from "../components/Our Team/ourteamcard";
-import { UserCreatePage, UserListingPage, UserEditPage } from "../pages/Our Team/exporting";
-import UserDonationDashboard from "../pages/dashboard/userdonation.dashboard";
+import React, { useEffect, useState } from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import Layout from '../layout/layout';
+import Landingpage from '../pages/landing';
+import { Signin, ForgotPassword } from '../pages/signin/signin';
+import Contact from '../pages/contactpage';
+import Aboutuspage from '../pages/About Us';
+import {
+    CampaignCreatePage,
+    Campaignlistingpage,
+    CampaignEditPage,
+} from '../pages/campaign/index';
+import AuthContext from '../context/auth.context';
+import authSvc from '../pages/auth/auth.service';
+import AdminLayout from '../layout/cms.page';
+import { AdminDashboard } from '../pages/dashboard';
+import CheckPermission from './rbac.config';
+import LoadingComponent from '../components/common/loading/loading.component';
+import Errorpage from '../components/common/error/notfounderror';
+import CampaignPage from '../pages/campaign/campaignpage';
+import ResetPassword from '../pages/signin/reset-password.page';
+import UserActivation from '../pages/auth/activate/activate.user.page';
+import CampaignOverview from '../pages/campaign/campaign.overview.component';
+import UserOverview from '../pages/Our Team/user.overview.component';
+import Ourteamcomponent from '../components/Our Team/ourteamcard';
+import {
+    UserCreatePage,
+    UserListingPage,
+    UserEditPage,
+} from '../pages/Our Team/exporting';
+import UserDonationDashboard from '../pages/dashboard/userdonation.dashboard';
 
 export const Routerconfig = () => {
     const [loggedInUser, setLoggedInUser] = useState(null);
@@ -31,16 +39,17 @@ export const Routerconfig = () => {
             setLoading(true);
             const { data }: any = await authSvc.getRequest('/auth/me', { auth: true });
             setLoggedInUser(data);
-
         } catch (exception) {
-            console.log("Error fetching user:", exception);
+            console.error('Error fetching user:', exception); // Changed to console.error for better visibility
+            // You might want to clear the token if the /auth/me call fails due to invalid token
+            localStorage.removeItem('_at');
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        const token = localStorage.getItem("_at");
+        const token = localStorage.getItem('_at');
         if (token) {
             getLoggedInUser();
         } else {
@@ -55,7 +64,7 @@ export const Routerconfig = () => {
             ) : (
                 <AuthContext.Provider value={{ loggedInUser, setLoggedInUser }}>
                     <Routes>
-                        {/* Public Routes */}
+                        {/* ==================== Public Routes ==================== */}
                         <Route element={<Layout />}>
                             <Route index element={<Landingpage />} />
                             <Route path="/aboutus" element={<Aboutuspage />} />
@@ -75,34 +84,42 @@ export const Routerconfig = () => {
                             <Route path="*" element={<Errorpage url="/" label="Go To Home" />} />
                         </Route>
 
-                        {/* Signin Route - outside main layout */}
+                        {/* ==================== Signin Route ==================== */}
                         <Route path="/signin" element={<Signin />} />
 
-                        {/* Admin Routes - Protected by CheckPermission */}
-                        <Route path="/admin" element={<CheckPermission allowedBy={['admin', 'member']} children={<AdminLayout />} />}>
+                        {/* ==================== Protected Admin/Dashboard Routes ==================== */}
+                        {/* All admin and member functionalities are now consolidated under /admin */}
+                        <Route
+                            path="/admin"
+                            element={
+                                <CheckPermission
+                                    allowedBy={['admin', 'member']}
+                                    children={<AdminLayout />}
+                                />
+                            }
+                        >
+                            {/* Default admin dashboard view */}
                             <Route index element={<AdminDashboard />} />
-                            <Route path="*" element={<Errorpage url="/admin" label="Go To Dashboard" />} />
 
-                            {/* Campaign Management */}
+                            {/* User-specific donation history */}
+                            <Route path="donations" element={<UserDonationDashboard />} />
+
+                            {/* Campaign Management routes */}
                             <Route path="campaign" element={<Campaignlistingpage />} />
                             <Route path="campaign/create" element={<CampaignCreatePage />} />
                             <Route path="campaign/edit/:id" element={<CampaignEditPage />} />
 
-                            {/* User Management (formerly Team Members) */}
+                            {/* User Management routes */}
                             <Route path="users" element={<UserListingPage />} />
                             <Route path="users/create" element={<UserCreatePage />} />
                             <Route path="users/edit/:id" element={<UserEditPage />} />
+
+                            {/* Catch-all for unknown paths under /admin */}
+                            <Route path="*" element={<Errorpage url="/admin" label="Go To Dashboard" />} />
                         </Route>
 
-                        {/* User Donation Dashboard - Protected Route */}
-                        <Route path="/dashboard" element={<CheckPermission allowedBy={['admin', 'member']} children={<AdminLayout />} />}>
-                        <Route index element={<CheckPermission allowedBy={['member']} children={<UserDonationDashboard />} />} />
-                        <Route path="admin-home" element={<AdminDashboard />} /> {/* Optional: a specific admin home */}
-                        <Route path="donations" element={<UserDonationDashboard />} />
-    {/* ... other admin routes */}
-                        <Route path="*" element={<Errorpage url="/dashboard" label="Go To Dashboard" />} />
-                        </Route>
-
+                        {/* Redirect /dashboard to /admin for consistency */}
+                        <Route path="/dashboard/*" element={<Navigate to="/admin" replace />} />
                     </Routes>
                 </AuthContext.Provider>
             )}

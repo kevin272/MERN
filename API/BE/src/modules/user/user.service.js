@@ -39,7 +39,7 @@ class UserService {
     // Sends activation email
     sendActivationEmail = async (user) => {
         try {
-            await mailService.sendEmail({
+            await mailService.sendMail({
                 to: user.email,
                 subject: 'Activate Your SajhaBiz Account',
                 html: `
@@ -77,15 +77,20 @@ class UserService {
     }
 
     // Get a single user by filter (used for login, activation, detail view)
+    // IMPORTANT: Explicitly select all fields needed on the frontend, INCLUDING password for login comparison.
     getSingleUserByFilter = async (filter) => {
         try {
-            const userDetail = await UserModel.findOne(filter);
+            // Explicitly select all relevant fields, including password for login
+            const userDetail = await UserModel.findOne(filter).select(
+                'name email password role status activationToken activatedFor title expertise bio image facebook twitter linkedin phone address'
+            );
             if (userDetail) {
                 return userDetail;
             } else {
-                throw { statusCode: 404, message: "User not found" }; // Changed from 422 to 404 for clarity
+                throw { statusCode: 404, message: "User not found" }; 
             }
         } catch (exception) {
+            console.error("Error in getSingleUserByFilter service:", exception);
             throw exception;
         }
     }
@@ -123,6 +128,7 @@ class UserService {
                 }
             };
         } catch (exception) {
+            console.error("Error in getUsers service:", exception);
             throw exception;
         }
     }
@@ -142,6 +148,7 @@ class UserService {
                 message: "Team members fetched successfully"
             };
         } catch (exception) {
+            console.error("Error in getUsersForHome service:", exception);
             throw exception;
         }
     }
@@ -149,6 +156,10 @@ class UserService {
     // Update a user
     updateUser = async (id, data, previousImage = null) => {
         try {
+            // Ensure password is not rehashed if not provided for update,
+            // or if it's already hashed and not intended for modification.
+            // transformUserCreate (if used here) would handle hashing if data.password exists.
+            
             const updatedUser = await UserModel.findByIdAndUpdate(id, { $set: data }, { new: true, runValidators: true });
             if (!updatedUser) {
                 throw { statusCode: 404, message: "User not found for update" };
