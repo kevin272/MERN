@@ -1,121 +1,171 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import CampaignSvc from "./campaigns.service"; // Ensure this path is correct
+import CampaignSvc from "./campaigns.service";
 import LoadingComponent from "../../components/common/loading/loading.component";
+import { toast } from 'react-toastify';
 
 const CampaignOverview = () => {
-  const { id } = useParams(); // Get the campaign ID from the URL
-  const [campaign, setCampaign] = useState<any>(null); // Renamed to 'campaign' for consistency
-  const [loading, setLoading] = useState(true); // Add loading state
-  const [error, setError] = useState<string | null>(null); // Add error state
+    const { id } = useParams();
+    const [campaign, setCampaign] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [showDonateInput, setShowDonateInput] = useState(false);
+    const [donationAmount, setDonationAmount] = useState<number | undefined>();
+    const fixedWidth = 300;
+    const fixedHeight = 200;
 
-  useEffect(() => {
-    const fetchCampaign = async () => {
-      setLoading(true); // Set loading to true when fetching starts
-      setError(null); // Clear any previous errors
-      try {
-        if (!id) { // Handle case where ID might be missing from URL
-          setError("Campaign ID is missing.");
-          setLoading(false);
-          return;
-        }
+    useEffect(() => {
+        const fetchCampaign = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                if (!id) {
+                    setError("Campaign ID is missing.");
+                    setLoading(false);
+                    return;
+                }
+                const response: any = await CampaignSvc.getCampaign(id);
+                setCampaign(response.result);
+            } catch (exception: any) {
+                setError(exception.message || "Failed to load campaign details.");
+            } finally {
+                setLoading(false);
+            }
+        };
 
-        console.log("Fetching single campaign with ID:", id); // Log the ID being fetched
-        
-        // *** CRITICAL FIX HERE: Use the specific service method `getCampaign` ***
-        // This method is defined in your campaigns.service.ts as:
-        // async getCampaign(id: string) { return await this.getRequest(`/campaign/${id}`, { auth: true }); }
-        const response: any = await CampaignSvc.getCampaign(id); 
-        
-        console.log("Single Campaign API Response:", response); // Log the full response
+        fetchCampaign();
+    }, [id]);
 
-        // *** CRITICAL FIX HERE: Access response.result for the campaign data ***
-        setCampaign(response.result); 
-        console.log("Campaign state updated to:", response.result);
-
-      } catch (exception: any) {
-        console.error("Error fetching single campaign:", exception); // Log the actual error
-        setError(exception.message || "Failed to load campaign details.");
-        // Optionally, redirect to a 404 page or campaign list if campaign not found
-      } finally {
-        setLoading(false); // Set loading to false when fetching completes
-        console.log("Loading state set to false for CampaignOverview.");
-      }
+    const handleDonateClick = () => {
+        setShowDonateInput(true);
     };
 
-    fetchCampaign();
-  }, [id]); // Dependency array: Re-run effect if 'id' changes
+    const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = parseInt(event.target.value, 10);
+        setDonationAmount(isNaN(value) ? undefined : value);
+    };
 
-  if (loading) {
-    return <LoadingComponent />; // Show loading spinner while fetching
-  }
+    const handleConfirmDonation = async () => {
+        if (!id) {
+            toast.error('Campaign ID missing.');
+            return;
+        }
+        if (donationAmount === undefined || donationAmount <= 0) {
+            toast.error('Enter a valid donation amount.');
+            return;
+        }
 
-  if (error) {
-    return (
-      <div className="text-center text-red-600 p-4">
-        <p>Error: {error}</p>
-        <p>Could not load campaign details. Please try again.</p>
-      </div>
-    );
-  }
+        try {
+            const userId = '6526ba6b6b597b0a8876c669'; // Replace with actual user ID
+            const response: any = await CampaignSvc.donateToCampaign(id, userId, donationAmount);
+            if (response) {
+                toast.success('Thank you for your donation!');
+                setCampaign({ ...campaign, raisedAmount: response.result.raisedAmount });
+                setShowDonateInput(false);
+                setDonationAmount(undefined);
+            } else {
+                toast.error('Donation failed.');
+            }
+        } catch (error: any) {
+            toast.error(error?.response?.data?.message || 'Donation failed.');
+        }
+    };
 
-  // If no campaign data is found after loading, display a message
-  if (!campaign) {
-    return (
-      <div className="text-center text-gray-600 dark:text-gray-400 p-8">
-        Campaign not found.
-      </div>
-    );
-  }
+    if (loading) {
+        return <LoadingComponent />;
+    }
 
-  return (
-    <>
-      <section className="py-8 bg-white md:py-16 dark:bg-gray-900 antialiased">
-        <div className="max-w-screen-xl px-4 mx-auto 2xl:px-0">
-          <div className="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
-            <div className="shrink-0 max-w-md lg:max-w-lg mx-auto">
-              <img
-                className="w-full dark:hidden rounded-lg shadow-lg"
-                src={campaign.image} // Use 'campaign' state
-                alt={campaign.title} // Use campaign.title for alt text
-                onError={(e: any) => {
-                  e.target.onerror = null; // Prevent infinite loop on error
-                  e.target.src = "https://placehold.co/400x300/cccccc/000000?text=No+Image"; // Fallback image
-                }}
-              />
+    if (error) {
+        return (
+            <div className="text-center text-red-500 p-4">
+                Error: {error}
+                <p className="mt-1 text-sm">Could not load campaign. Please try again.</p>
             </div>
+        );
+    }
 
-            <div className="mt-6 sm:mt-8 lg:mt-0">
-              <h1 className="text-3xl font-semibold text-red-800 sm:text-4xl dark:text-white">
-                {campaign.title}
-              </h1>
-              <div className="mt-4 sm:items-center sm:gap-4 sm:flex">
-                <p className="text-lg text-black dark:text-gray-400">
-                  Published on {new Date(campaign.createdAt).toLocaleDateString()} <br /> {/* Use createdAt for date */}
-                </p>
-              </div>
-
-              <hr className="my-6 md:my-8 border-red-800 dark:border-gray-800" />
-
-              {/* Preserve description formatting */}
-              <p
-                className="mb-6 text-black dark:text-gray-400"
-                style={{ whiteSpace: "pre-wrap" }}
-              >
-                {campaign.description}
-              </p>
-
-              <p className="mb-6 text-red-800 dark:text-gray-400 text-right">
-                Created by - {campaign.createdBy?.name || "N/A"} {/* Access createdBy.name */}
-                <br />
-                SajhaBiz
-              </p>
+    if (!campaign) {
+        return (
+            <div className="text-center text-gray-500 p-4">
+                Campaign details not found.
             </div>
-          </div>
+        );
+    }
+
+    return (
+        <div className="flex justify-center items-start min-h-screen bg-gray-100 dark:bg-gray-900 py-8">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden w-full md:w-4/5 lg:w-3/5 xl:w-1/2">
+                <div className="flex justify-center">
+                    <div style={{ width: fixedWidth, height: fixedHeight, overflow: 'hidden', borderRadius: '0.375rem' }}>
+                        <img
+                            className="w-full h-full object-cover rounded-t-lg"
+                            src={campaign.image}
+                            alt={campaign.title}
+                            onError={(e: any) => {
+                                e.target.onerror = null;
+                                e.target.src = `https://placehold.co/${fixedWidth}x${fixedHeight}/cccccc/888888?text=No+Image`;
+                            }}
+                        />
+                    </div>
+                </div>
+
+                <div className="p-6">
+                    <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-3">
+                        {campaign.title}
+                    </h1>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                        Published: {new Date(campaign.createdAt).toLocaleDateString()}
+                    </p>
+                    <p className="text-gray-700 dark:text-gray-300 mb-4" style={{ whiteSpace: "pre-wrap" }}>
+                        {campaign.description}
+                    </p>
+
+                    <div className="flex justify-between items-center mb-4">
+                        <div>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                                Created by: <span className="font-semibold">{campaign.createdBy?.name || "N/A"}</span>
+                            </p>
+                            <p className="text-sm text-green-600 dark:text-green-400">
+                                Goal: ${campaign.goalAmount?.toLocaleString()}
+                            </p>
+                            <p className="text-sm text-blue-600 dark:text-blue-400">
+                                Raised: ${campaign.raisedAmount?.toLocaleString()}
+                            </p>
+                        </div>
+                        {!showDonateInput ? (
+                            <button
+                                onClick={handleDonateClick}
+                                className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                            >
+                                Donate
+                            </button>
+                        ) : (
+                            <div className="flex items-center space-x-2">
+                                <input
+                                    type="number"
+                                    placeholder="Amount"
+                                    className="shadow-sm border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-green-500 focus:border-green-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                    onChange={handleAmountChange}
+                                />
+                                <button
+                                    onClick={handleConfirmDonation}
+                                    className="px-3 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50"
+                                >
+                                    Confirm
+                                </button>
+                                <button
+                                    onClick={() => setShowDonateInput(false)}
+                                    className="px-3 py-2 text-gray-500 hover:text-gray-700 rounded-md text-sm font-medium focus:outline-none"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
         </div>
-      </section>
-    </>
-  );
+    );
 };
 
 export default CampaignOverview;

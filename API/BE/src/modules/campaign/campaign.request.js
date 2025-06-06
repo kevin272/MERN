@@ -23,7 +23,13 @@ const CampaignUpdateDTO = Joi.object({
     image: Joi.string().allow(null, '').optional().default(null),
 });
 
+const CampaignDonateDTO = Joi.object({
+    userId: Joi.string().required(),
+    amount: Joi.number().min(1).required(),
+});
+
 module.exports = {
     CampaignCreateDTO,
-    CampaignUpdateDTO
+    CampaignUpdateDTO,
+    CampaignDonateDTO
 };

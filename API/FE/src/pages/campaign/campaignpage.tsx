@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Breadcrumbnavigation from "../../components/common/breadcrumb navigation/breadcrumb component";
-import CampaignSvc from "./campaigns.service"; // Import your Campaign Service
-import LoadingComponent from "../../components/common/loading/loading.component"; // Your loading spinner
-import { Link } from "react-router-dom"; // For linking to individual campaign pages
-import { toast } from "react-toastify"; // For error notifications
+import CampaignSvc from "./campaigns.service"; 
+import LoadingComponent from "../../components/common/loading/loading.component"; 
+import { Link } from "react-router-dom"; 
+import { toast } from "react-toastify";
 
 const CampaignPage = () => {
     const [campaigns, setCampaigns] = useState<any[]>([]);
@@ -13,7 +13,7 @@ const CampaignPage = () => {
     useEffect(() => {
         const fetchPublicCampaigns = async () => {
             setLoading(true);
-            setError(null); // Clear any previous errors
+            setError(null);
             try {
                 // Fetch, for example, 6 active campaigns for the public view
                 const response: any = await CampaignSvc.getActiveCampaignsForPublicHome(6); 
@@ -47,7 +47,6 @@ const CampaignPage = () => {
 
     return (
         <>
-            {/* Breadcrumb Navigation - kept as is */}
             <Breadcrumbnavigation>Campaigns</Breadcrumbnavigation>
             
             {/* Main Content Area */}
@@ -91,7 +90,7 @@ const CampaignPage = () => {
                                                 Goal: <span className="text-emerald-700 dark:text-emerald-400">${campaign.goalAmount.toLocaleString()}</span>
                                             </span>
                                             <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
-                                                Raised: <span className="text-emerald-700 dark:text-emerald-400">${campaign.currentAmount.toLocaleString()}</span>
+                                                Raised: <span className="text-emerald-700 dark:text-emerald-400">${campaign.raisedAmount.toLocaleString()}</span>
                                             </span>
                                         </div>
                                         {/* Learn More Button */}

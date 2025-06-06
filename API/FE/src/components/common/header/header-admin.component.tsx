@@ -1,5 +1,5 @@
 import { HiMenu, HiUser } from "react-icons/hi";
-import logo from "../../../assets/logo2.svg"; // Assuming logo is in the correct path
+import logo from "../../../assets/logo2.svg"; 
 import { NavLink, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import AuthContext from "../../../context/auth.context";
@@ -40,7 +40,7 @@ const AdminHeader = () => {
         <div className="flex items-center lg:order-2">
           <button
             onClick={handleSignOut}
-            className="flex items-center text-sm bg-red-800 text-white rounded-full p-2"
+            className="flex items-center text-sm bg-emerald-800 text-white rounded-full p-2"
           >
             {loggedInUser && loggedInUser.image ? (
               <img className="w-8 h-8 rounded-full" src={loggedInUser.image} alt="user photo" />

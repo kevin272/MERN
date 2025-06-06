@@ -53,21 +53,17 @@ const CreateCampaignPage = () => {
     setLoading(true);
 
     try {
-      // IMPORTANT: Re-enable and refine image validation
       if (!formData.image) {
         toast.error("Please upload a campaign image.");
-        setLoading(false); // Stop loading if image is missing
+        setLoading(false);
         return; // Exit early
       }
 
       const submitData = new FormData();
-      // Append all form data fields
       for (const key in formData) {
-        // Ensure image is appended correctly as a File object
         if (key === 'image' && formData.image) {
           submitData.append(key, formData.image);
         } else if (formData[key as keyof typeof formData] !== null && formData[key as keyof typeof formData] !== undefined) {
-          // Convert numbers to strings for FormData, and handle other types
           submitData.append(key, String(formData[key as keyof typeof formData])); 
         }
       }
@@ -79,10 +75,10 @@ const CreateCampaignPage = () => {
       }
 
       const response = await CampaignSvc.createCampaign(submitData);
-      console.log("Frontend: Campaign creation response:", response); // Log the full response
+      console.log("Frontend: Campaign creation response:", response); 
 
       toast.success("Campaign created successfully!");
-      navigate("/admin/campaign"); // Redirect to campaign list page (ensure this is the correct admin path)
+      navigate("/admin/campaign"); 
     } catch (error: any) { // Catch the error to access its properties
       console.error("Frontend: Error creating campaign:", error); // Log the full error object
       const errorMessage = error.response?.data?.message || "Could not create campaign. Please try again.";
@@ -192,18 +188,17 @@ const CreateCampaignPage = () => {
                   <option value="arts">Arts</option>
                   <option value="music">Music</option>
                   <option value="film">Film</option>
-                  {/* Add more categories as needed */}
                 </Select>
               </div>
 
               <div>
-                <Label htmlFor="image" value="Upload Image" className="text-green-800" /> {/* Green label */}
+                <Label htmlFor="image" value="Upload Image" className="text-green-800" />
                 <FileInput
                   id="image"
                   name="image"
                   accept="image/*"
                   onChange={handleImageChange}
-                  className="focus:border-green-600 focus:ring-green-600 rounded-md" // Green focus
+                  className="focus:border-green-600 focus:ring-green-600 rounded-md"
                 />
                 {formData.image && typeof formData.image !== "string" && (
                   <p className="mt-1 text-sm text-gray-500 dark:text-gray-300">

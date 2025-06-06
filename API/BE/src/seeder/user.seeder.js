@@ -5,11 +5,20 @@ const { statusType, UserRoles } = require('../config/constants.config');
 
 const adminUsers = [
   {
-    name: "Kebin Malla",
-    email: "mallakebin@gmail.com",
-    password: bcrypt.hashSync("admin2060", 10),
+    name: "Admin User",
+    email: "admin@gmail.com",
+    password: "$2a$10$4XUtO0EAibYWu9zIU5Zl9OZeLlUKApwoqyA1Na2GiIcv0VnIqEhO2", //used instead of bcryptsync due to errors
     role: UserRoles.ADMIN,
-    status: statusType.ACTIVE,
+    status: statusType.ACTIVE, // THIS IS KEY for immediate login
+    title: "ADMINISTRATOR",
+    expertise: "Full Stack Development, Project Management",
+    bio: "Experienced administrator overseeing system operations and development initiatives.",
+    image: "https://placehold.co/150x150/007bff/ffffff?text=ADMIN",
+    facebook: "https://www.facebook.com/admin_profile",
+    twitter: "https://x.com/admin_profile",
+    linkedin: "https://www.linkedin.com/in/admin_profile/",
+    phone: "123-456-7890",
+    address: "123 Admin Street, City, Country"
   }
 ];
 

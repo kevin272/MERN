@@ -1,5 +1,5 @@
 import { Button } from "flowbite-react";
-import video from "../../assets/public/video.mp4"; // Assuming the video path is correct
+import video from "../../assets/public/video.mp4"; 
 
 const Herosection = () => {
   return (
@@ -11,7 +11,7 @@ const Herosection = () => {
           autoPlay
           loop
           muted
-          playsInline // Added for better mobile compatibility
+          playsInline 
         >
           <source src={video} type="video/mp4" />
           Your browser does not support the video tag.
@@ -29,7 +29,7 @@ const Herosection = () => {
           </p>
           <div className="flex justify-center mt-10">
             <Button 
-              href="/campaign" // Link to public campaigns page
+              href="/campaign" 
               className="bg-white text-emerald-800 px-8 py-4 text-lg sm:text-xl font-bold 
                          rounded-full shadow-lg hover:bg-emerald-50 transition-all duration-300 
                          transform hover:scale-105 focus:ring-4 focus:ring-emerald-300 focus:ring-offset-2

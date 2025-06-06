@@ -122,7 +122,40 @@ class CampaignController {
         }
     }
 
+    donateToCampaign = async (req, res, next) => {
+        try {
+            const { campaignId } = req.params;
+            const { userId, amount } = req.body;
 
+            const campaign = await campaignService.donateToCampaign(campaignId, userId, amount);
+
+            if (!campaign) {
+                return res.status(404).json({ message: "Campaign not found" });
+            }
+
+            res.json({
+                result: campaign,
+                message: "Donation successful",
+                meta: null
+            });
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    getUserDonationHistory = async (req, res, next) => {
+    try {
+        const { userId } = req.params;
+        const donations = await campaignService.getUserDonationHistory(userId);
+        res.json({
+            result: donations,
+            message: "User donation history retrieved successfully",
+            meta: null
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 }
 
 
