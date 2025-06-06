@@ -29,7 +29,7 @@ import {
     UserEditPage,
 } from '../pages/Our Team/exporting';
 import OverallDonationSummary from '../pages/dashboard/donation.summary';
-import UserDonationDashboard from '../pages/dashboard/user.dashboard';
+import UserDonationDashboard from '../pages/dashboard/userdonation.dashboard';
 
 export const Routerconfig = () => {
     const [loggedInUser, setLoggedInUser] = useState(null);

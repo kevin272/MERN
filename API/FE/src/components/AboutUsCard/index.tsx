@@ -21,7 +21,7 @@ const AboutUs = () => {
         {/* Card Body / Description */}
         <div className="p-6 sm:p-8 text-center">
           <p className="text-base leading-relaxed text-gray-700 dark:text-gray-300 mb-6">
-            SajhaBiz empowers local Nepali businesses through community-driven crowdfunding. We connect innovative ideas with passionate supporters to foster sustainable growth and positive impact across the nation.
+            SajhaBiz empowers local Nepali businesses through community-driven funding. We connect innovative ideas with passionate supporters to foster sustainable growth and positive impact across the nation.
           </p>
 
           {/* Call to Action Button */}

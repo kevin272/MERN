@@ -32,7 +32,7 @@ router.route('/:id')
     hasPermission(['admin']),
     setPath('user'),
     uploadFile().single('image'),
-    bodyValidator(userUpdateDTO),
+    bodyValidator(userUpdateDTO,{ stripUnknown: true }),
     userController.userUpdate
   )
   .delete(
