@@ -28,7 +28,8 @@ import {
     UserListingPage,
     UserEditPage,
 } from '../pages/Our Team/exporting';
-import UserDonationDashboard from '../pages/dashboard/userdonation.dashboard';
+import OverallDonationSummary from '../pages/dashboard/donation.summary';
+import UserDonationDashboard from '../pages/dashboard/user.dashboard';
 
 export const Routerconfig = () => {
     const [loggedInUser, setLoggedInUser] = useState(null);
@@ -102,7 +103,8 @@ export const Routerconfig = () => {
                             <Route index element={<AdminDashboard />} />
 
                             {/* User-specific donation history */}
-                            <Route path="donations" element={<UserDonationDashboard />} />
+                            <Route path="donations" element={<OverallDonationSummary />} />
+                            <Route path="donation" element={<UserDonationDashboard />} />
 
                             {/* Campaign Management routes */}
                             <Route path="campaign" element={<Campaignlistingpage />} />

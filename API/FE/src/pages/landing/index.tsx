@@ -6,12 +6,9 @@ const Landingpage=() => {
 
     return(
          <>
-        
         <Herosection/> 
         <br/>    
-        
         <Aboutus/> 
-        
         </>
     )
 }

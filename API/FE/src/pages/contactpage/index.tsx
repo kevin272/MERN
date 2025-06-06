@@ -89,47 +89,49 @@ const Contactform = () => {
         </div>
 
         {/* Contact Form */}
+        <div className="w-full flex justify-center bg-gray-100 p-4">
         <div className="grid sm:grid-cols-2 items-start gap-16 p-4 mx-auto max-w-4xl bg-white font-[sans-serif]">
-          <form onSubmit={onSubmit} className="ml-auto space-y-4 w-full">
-            <input
-              type="text"
-              placeholder="Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-md py-3 px-4 bg-gray-100 text-gray-300 text-sm outline-green-300 focus:bg-transparent"
-              required
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-md py-3 px-4 bg-gray-100 text-gray-300 text-sm outline-green-300 focus:bg-transparent"
-              required
-            />
-            <input
-              type="text"
-              placeholder="Subject"
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              className="w-full rounded-md py-3 px-4 bg-gray-100 text-gray-300 text-sm outline-green-300 focus:bg-transparent"
-              required
-            />
-            <textarea
-              placeholder="Message"
-              rows={6}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              className="w-full rounded-md px-4 bg-gray-100 text-gray-300 text-sm pt-3 outline-green-300 focus:bg-transparent"
-              required
-            ></textarea>
-            <button
-              type="submit"
-              className="text-white bg-green-300 hover:bg-green-600 tracking-wide rounded-md text-sm px-4 py-3 w-full !mt-6"
-            >
-              Send
-            </button>
-          </form>
+          <form onSubmit={onSubmit} className="space-y-4 w-full mx-auto"> 
+          <input
+            type="text"
+            placeholder="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full rounded-md py-3 px-4 bg-gray-100 text-gray-800 text-sm outline-none focus:ring-2 focus:ring-emerald-600 focus:bg-white border border-gray-300" /* Corrected text color and focus styles */
+            required
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full rounded-md py-3 px-4 bg-gray-100 text-gray-800 text-sm outline-none focus:ring-2 focus:ring-emerald-600 focus:bg-white border border-gray-300" /* Corrected text color and focus styles */
+            required
+          />
+          <input
+            type="text"
+            placeholder="Subject"
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            className="w-full rounded-md py-3 px-4 bg-gray-100 text-gray-800 text-sm outline-none focus:ring-2 focus:ring-emerald-600 focus:bg-white border border-gray-300" /* Corrected text color and focus styles */
+            required
+          />
+          <textarea
+            placeholder="Message"
+            rows={6}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            className="w-full rounded-md px-4 bg-gray-100 text-gray-800 text-sm pt-3 outline-none focus:ring-2 focus:ring-emerald-600 focus:bg-white border border-gray-300" /* Corrected text color and focus styles */
+            required
+          ></textarea>
+          <button
+            type="submit"
+            className="text-white bg-emerald-600 hover:bg-emerald-700 tracking-wide rounded-md text-sm px-4 py-3 w-full !mt-6 transition-colors duration-300" /* Corrected button color */
+          >
+            Send
+          </button>
+        </form>
+        </div>
         </div>
       </div>
     </>

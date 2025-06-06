@@ -4,13 +4,11 @@ import { BsFacebook, BsTwitter } from "react-icons/bs";
 const Footercomponent = () => {
     return (
         <Footer container className="bg-emerald-800 dark:bg-gray-900 text-white rounded-t-2xl shadow-lg py-8 px-4">
-            <div className="w-full max-w-7xl mx-auto"> {/* Adjusted max-width and padding */}
-                {/* Main grid for Brand, Navigation, Social */}
+            <div className="w-full max-w-7xl mx-auto"> 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 justify-between items-start">
                     {/* Brand Info */}
                     <div className="flex flex-col items-center md:items-start text-center md:text-left">
                         <a href="/" className="flex justify-center md:justify-start items-center mb-2">
-                            {/* You can replace this with your actual logo */}
                             <img
                                 className="w-16 h-16 object-contain rounded-full border-2 border-emerald-500 shadow-md"
                                 src="https://placehold.co/64x64/d1fae5/065f46?text=SB" // Smaller placeholder logo
@@ -26,7 +24,7 @@ const Footercomponent = () => {
                     {/* Navigation Links */}
                     <div className="flex flex-col items-center md:items-start text-center md:text-left">
                         <h3 className="text-emerald-300 dark:text-emerald-400 text-lg font-semibold mb-4">Navigate</h3>
-                        <div className="flex flex-col gap-2"> {/* Changed to flex-col for vertical links */}
+                        <div className="flex flex-col gap-2"> 
                             <a href="/" className="text-sm text-emerald-100 hover:text-white dark:text-gray-300 dark:hover:text-white transition-colors duration-200">Home</a>
                             <a href="/campaign" className="text-sm text-emerald-100 hover:text-white dark:text-gray-300 dark:hover:text-white">Campaigns</a>
                             <a href="/aboutus" className="text-sm text-emerald-100 hover:text-white dark:text-gray-300 dark:hover:text-white">About Us</a>
@@ -44,7 +42,6 @@ const Footercomponent = () => {
                             <a href="https://twitter.com/sajhabiz" target="_blank" rel="noopener noreferrer" className="text-2xl text-emerald-100 hover:text-white dark:text-gray-300 dark:hover:text-white transition-colors duration-200">
                                 <BsTwitter />
                             </a>
-                            {/* Add more social icons here */}
                         </div>
                     </div>
                 </div>

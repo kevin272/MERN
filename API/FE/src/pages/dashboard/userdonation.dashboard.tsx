@@ -15,25 +15,15 @@ const UserDonationDashboard = () => {
     const [donations, setDonations] = useState<Donation[]>([]); // Use the defined interface
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    // FIX: Destructure 'loggedInUser' which is the actual property provided by AuthContext
     const { loggedInUser } = useContext(AuthContext); 
 
     useEffect(() => {
         const fetchDonationHistory = async () => {
-            // FIX: Use 'loggedInUser?.id' for the check and API call
-            if (!loggedInUser?.id) { 
-                setError("User not authenticated or user ID is missing.");
-                setLoading(false);
-                return;
-            }
 
             setLoading(true);
             setError(null);
 
             try {
-                // FIX: Pass loggedInUser.id to the service
-                // FIX: Assuming CampaignSvc.getUserDonationHistory now returns a response with a 'result' property
-                // containing a flattened array of { campaignId, campaignTitle, amount, donationDate }
                 const response = await CampaignSvc.getUserDonationHistory(loggedInUser.id);
                 setDonations(response?.data || []); // Access the 'result' property from the backend response
             } catch (err: any) {
@@ -44,12 +34,10 @@ const UserDonationDashboard = () => {
             }
         };
 
-        // Trigger fetch only if loggedInUser is available
-        // This prevents attempting to fetch data with an undefined user ID on initial render
         if (loggedInUser) {
             fetchDonationHistory();
         }
-    }, [loggedInUser]); // Depend on loggedInUser to re-run when its value changes
+    }, [loggedInUser]);
 
     if (loading) {
         return <LoadingComponent />;

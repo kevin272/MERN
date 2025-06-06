@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
-import CampaignSvc from '../../pages/campaign/campaigns.service'; // Adjust path as needed
-import AuthContext from '../../context/auth.context'; // Import AuthContext directly
-import LoadingComponent from '../../components/common/loading/loading.component'; // Assuming you have this
+import CampaignSvc from '../../pages/campaign/campaigns.service'; 
+import AuthContext from '../../context/auth.context'; 
+import LoadingComponent from '../../components/common/loading/loading.component';
 
-// Define an interface for the expected donation data structure
 interface Donation {
     campaignId: string;
     campaignTitle: string;
@@ -15,7 +14,6 @@ const UserDonationHistory = () => {
     const [donations, setDonations] = useState<Donation[]>([]); // Use the defined interface
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    // CORRECTED: Destructure loggedInUser from AuthContext
     const { loggedInUser } = useContext(AuthContext);
 
     useEffect(() => {
@@ -33,8 +31,6 @@ const UserDonationHistory = () => {
             try {
                 // Pass loggedInUser.id to the service
                 const response = await CampaignSvc.getUserDonationHistory(loggedInUser.id);
-                // Ensure response structure matches what CampaignSvc returns (e.g., response.result, assuming result is the array of donations)
-                // Assuming CampaignSvc.getUserDonationHistory now returns a flattened array of { campaignId, campaignTitle, amount, donationDate }
                 setDonations(response?.data || []); // Access the 'result' property from the backend response
             } catch (err: any) {
                 console.error("Failed to fetch donation history:", err);
