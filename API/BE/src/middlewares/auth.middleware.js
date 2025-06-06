@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const UserModel = require('../modules/user/user.model');  // Adjust this path to your user model location
+const UserModel = require('../modules/user/user.model'); 
 require('dotenv').config();
 
 const loginCheck = async (req, res, next) => {
