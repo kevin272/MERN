@@ -1,5 +1,5 @@
 const { fileFilterType } = require('../../config/constants.config');
-const { campaignAuth } = require('../../middlewares/campaignauth.middleware'); // Assuming this is where you saved it
+const { campaignAuth } = require('../../middlewares/campaignauth.middleware');
 const { hasPermission } = require('../../middlewares/rbac.middleware');
 const { setPath, uploadFile } = require('../../middlewares/uploader.middleware');
 const { loginCheck } = require('../../middlewares/auth.middleware');
@@ -8,7 +8,7 @@ const { CampaignCreateDTO, CampaignUpdateDTO, CampaignDonateDTO } = require('./c
 const CampaignController = require('./campaign.controller');
 const router = require('express').Router();
 
-router.get('/list-home', CampaignController.ListForHome); // No auth for listing (or adjust as needed)
+router.get('/list-home', CampaignController.ListForHome); // No auth for listing
 
 
 router.route('/')
@@ -20,10 +20,10 @@ router.route('/')
         bodyValidator(CampaignCreateDTO),
         CampaignController.create
     )
-    .get(CampaignController.index); // No auth for listing (or adjust as needed)
+    .get(CampaignController.index); 
 
 router.route('/:id')
-    .get(CampaignController.view) // No auth for viewing (or adjust)
+    .get(CampaignController.view) // No auth for viewing 
     .patch(
         loginCheck,
         campaignAuth, // Creator or admin can edit
