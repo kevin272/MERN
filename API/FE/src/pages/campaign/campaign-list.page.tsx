@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import CampaignSvc from "./campaigns.service";
 import { SearchParams } from "../../config/constants";
 import { ActionButtons } from "../../components/table/table-action.component";
-import RowSkeleton from "../../components/common/table/table-skeleton.component"; // Import RowSkeleton
+import RowSkeleton from "../../components/common/table/table-skeleton.component";
 
 const Campaignlistingpage = () => {
   const [pagination, setPagination] = useState({
@@ -137,7 +137,7 @@ const Campaignlistingpage = () => {
                       </Table.Cell>
                       <Table.Cell>{row.description}</Table.Cell>
                       <Table.Cell>
-                        <Badge color={row.status === "active" ? "green" : "red"}> {/* Updated colors */}
+                        <Badge color={row.status === "active" ? "green" : "red"}>
                           {row.status === "active" ? "Published" : "Unpublished"}
                         </Badge>
                       </Table.Cell>

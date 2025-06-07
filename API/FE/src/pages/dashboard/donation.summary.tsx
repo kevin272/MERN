@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
-import CampaignSvc from '../../pages/campaign/campaigns.service'; // Adjust path as needed
+import CampaignSvc from '../../pages/campaign/campaigns.service';
 import AuthContext from '../../context/auth.context';
 import LoadingComponent from '../../components/common/loading/loading.component';
 
-// Define the expected structure for our summary data
 interface DonationSummary {
     totalCampaigns: number;
     totalDonationsAmount: number;
@@ -50,7 +49,7 @@ const OverallDonationSummary = () => {
                         if (campaign.donors && Array.isArray(campaign.donors)) {
                             campaign.donors.forEach((donor: any) => {
                                 totalAmount += donor.amount;
-                                uniqueDonors.add(String(donor.userId._id)); // Add donor ID to Set for uniqueness
+                                uniqueDonors.add(String(donor.userId._id));
                                 campaignSums[campaign._id].amount += donor.amount; // Sum donations per campaign
                             });
                         }
@@ -78,13 +77,12 @@ const OverallDonationSummary = () => {
             } catch (err: any) {
                 // Simple error message for the user
                 setError("Failed to load donation summary. Please try again.");
-                console.error("Error fetching data:", err); // Log full error for debugging
+                console.error("Error fetching data:", err);
             } finally {
                 setLoading(false);
             }
         };
 
-        // Only start fetching data if loggedInUser is available (meaning auth check is likely done)
         if (loggedInUser) {
             fetchData();
         }

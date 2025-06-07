@@ -12,7 +12,7 @@ import {
 import { FaPaperPlane, FaUndo } from "react-icons/fa";
 
 interface UserFormData {
-  name: string; // Changed from fullname to name
+  name: string;
   email: string;
   password?: string;
   confirmPassword?: string;
@@ -39,7 +39,7 @@ const TeamFormComponent = ({
   initialData,
 }: TeamFormComponentProps) => {
   const teamDTO = Yup.object().shape({
-    name: Yup.string().min(3).max(100).required(), // Changed from fullname to name
+    name: Yup.string().min(3).max(100).required(), 
     email: Yup.string().email().required(),
     password: Yup.string().min(6).max(100).optional(), // Optional for editing
     confirmPassword: Yup.string()
@@ -64,7 +64,7 @@ const TeamFormComponent = ({
     image: Yup.mixed<File | string>()
       .optional()
       .nullable(),
-    bio: Yup.string().required(), // Changed from description to bio
+    bio: Yup.string().required(),
   });
 
   const {

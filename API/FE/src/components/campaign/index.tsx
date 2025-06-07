@@ -27,9 +27,6 @@ export const CampaignComponentforPage = () => {
         <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-red-800 dark:text-white">
           Our Campaign
         </h2>
-        <p className="font-light text-red-800 sm:text-xl dark:text-gray-400">
-          Our firm employs a proactive approach to evaluate legal strategies, allowing us to address client needs efficiently and effectively while adapting to evolving circumstances.
-        </p>
       </div>
 
       <div className="grid gap-8 lg:grid-cols-3">
