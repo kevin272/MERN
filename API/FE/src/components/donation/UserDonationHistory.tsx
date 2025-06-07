@@ -7,18 +7,17 @@ interface Donation {
     campaignId: string;
     campaignTitle: string;
     amount: number;
-    donationDate?: string; // Optional, depending on your backend transformation
+    donationDate?: string; 
 }
 
 const UserDonationHistory = () => {
-    const [donations, setDonations] = useState<Donation[]>([]); // Use the defined interface
+    const [donations, setDonations] = useState<Donation[]>([]); 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const { loggedInUser } = useContext(AuthContext);
 
     useEffect(() => {
         const fetchDonationHistory = async () => {
-            // Use loggedInUser.id for the check and API call
             if (!loggedInUser?.id) {
                 setError("User not authenticated or user ID is missing. Please log in.");
                 setLoading(false);
@@ -29,9 +28,8 @@ const UserDonationHistory = () => {
             setError(null);
 
             try {
-                // Pass loggedInUser.id to the service
                 const response = await CampaignSvc.getUserDonationHistory(loggedInUser.id);
-                setDonations(response?.data || []); // Access the 'result' property from the backend response
+                setDonations(response?.data || []); 
             } catch (err: any) {
                 console.error("Failed to fetch donation history:", err);
                 setError(err.message || "Failed to fetch donation history.");
@@ -40,8 +38,7 @@ const UserDonationHistory = () => {
             }
         };
 
-        // Trigger fetch only if loggedInUser is available
-        // This ensures the effect doesn't run with an undefined user on initial render
+
         if (loggedInUser) {
             fetchDonationHistory();
         }
@@ -76,7 +73,7 @@ const UserDonationHistory = () => {
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                             {donations.map((donation) => (
-                                <tr key={donation.campaignId}> {/* Use campaignId as key if available and unique */}
+                                <tr key={donation.campaignId}> 
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                         {donation.campaignTitle}
                                     </td>

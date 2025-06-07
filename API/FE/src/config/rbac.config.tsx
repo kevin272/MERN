@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { Navigate } from "react-router-dom";
 
 const CheckPermission = ({ children }: any) => {
-  const { loggedInUser } = useContext(AuthContext); // Access loggedInUser properly
+  const { loggedInUser } = useContext(AuthContext); 
 
   if (!loggedInUser) {
     // User is not logged in, redirect to login page

@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faTwitter, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "flowbite-react";
-import UserSvc from "../../pages/Our Team/user.service"; // Assuming this is the correct service
+import UserSvc from "../../pages/Our Team/user.service";
 import { useEffect, useState } from "react";
 import Breadcrumbnavigation from "../common/breadcrumb navigation/breadcrumb component";
 import LoadingComponent from "../common/loading/loading.component";

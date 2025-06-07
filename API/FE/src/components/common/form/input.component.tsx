@@ -1,5 +1,5 @@
 import { useController } from "react-hook-form";
-import Select, { components } from "react-select"; //  Import components from react-select
+import Select, { components } from "react-select";
 
 export interface InputLabelProps {
     children: any;
@@ -118,7 +118,6 @@ export const SelectComponent = ({
     );
 };
 
-//  New Component for Date input (Basic - Consider a datepicker library)
 export const DateInputComponent = ({
     control,
     name,

@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
-import CampaignSvc from '../campaign/campaigns.service'; // Adjust path as needed
-import AuthContext from '../../context/auth.context'; // Import AuthContext directly
-import LoadingComponent from '../../components/common/loading/loading.component'; // Assuming you have this
+import CampaignSvc from '../campaign/campaigns.service';
+import AuthContext from '../../context/auth.context'; 
+import LoadingComponent from '../../components/common/loading/loading.component';
 
-// Define an interface for the expected flattened donation data structure
+
 interface Donation {
     campaignId: string;
     campaignTitle: string;
     amount: number;
-    donationDate?: string; // Assuming your backend provides a date for the donation
+    donationDate?: string; 
 }
 
 const UserDonationDashboard = () => {

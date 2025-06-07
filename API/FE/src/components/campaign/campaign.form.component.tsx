@@ -9,7 +9,7 @@ import {
     SelectComponent,
     SubmitButton,
     CancelButton,
-} from "../common/form/input.component"; // Adjust path
+} from "../common/form/input.component";
 import { FileInput } from "flowbite-react";
 import { FaPaperPlane, FaUndo } from "react-icons/fa";
 import { Breadcrumb } from "flowbite-react";

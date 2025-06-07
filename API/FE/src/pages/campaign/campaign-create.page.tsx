@@ -93,7 +93,7 @@ const CreateCampaignPage = () => {
       <div className="overflow-x-auto mt-5 mb-5 ml-2 mr-2">
         <Heading1>Create Campaign</Heading1>
         <br />
-        <hr className="border-green-600" /> {/* Green hr */}
+        <hr className="border-green-600" /> 
       </div>
 
       <div>
@@ -104,7 +104,7 @@ const CreateCampaignPage = () => {
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div>
-                <Label htmlFor="title" value="Title" className="text-green-800" /> {/* Green label */}
+                <Label htmlFor="title" value="Title" className="text-green-800" />  
                 <TextInput
                   id="title"
                   name="title"
@@ -113,12 +113,12 @@ const CreateCampaignPage = () => {
                   required
                   value={formData.title}
                   onChange={handleChange}
-                  className="focus:border-green-600 focus:ring-green-600 rounded-md" // Green focus
+                  className="focus:border-green-600 focus:ring-green-600 rounded-md"   
                 />
               </div>
 
               <div>
-                <Label htmlFor="description" value="Description" className="text-green-800" /> {/* Green label */}
+                <Label htmlFor="description" value="Description" className="text-green-800" />  
                 <Textarea
                   id="description"
                   name="description"
@@ -127,12 +127,12 @@ const CreateCampaignPage = () => {
                   rows={4}
                   value={formData.description}
                   onChange={handleChange}
-                  className="focus:border-green-600 focus:ring-green-600 rounded-md" // Green focus
+                  className="focus:border-green-600 focus:ring-green-600 rounded-md"
                 />
               </div>
 
               <div>
-                <Label htmlFor="goalAmount" value="Goal Amount" className="text-green-800" /> {/* Green label */}
+                <Label htmlFor="goalAmount" value="Goal Amount" className="text-green-800" />
                 <TextInput
                   id="goalAmount"
                   name="goalAmount"
@@ -141,13 +141,13 @@ const CreateCampaignPage = () => {
                   required
                   value={formData.goalAmount ? formData.goalAmount.toString() : ""}
                   onChange={handleChange}
-                  className="focus:border-green-600 focus:ring-green-600 rounded-md" // Green focus
+                  className="focus:border-green-600 focus:ring-green-600 rounded-md"
                 />
               </div>
 
               <div className="flex gap-4">
-                <div className="flex-1"> {/* Use flex-1 to make them take equal space */}
-                  <Label htmlFor="startDate" value="Start Date" className="text-green-800" /> {/* Green label */}
+                <div className="flex-1"> 
+                  <Label htmlFor="startDate" value="Start Date" className="text-green-800" />
                   <TextInput
                     id="startDate"
                     name="startDate"
@@ -155,12 +155,12 @@ const CreateCampaignPage = () => {
                     required
                     value={formData.startDate}
                     onChange={handleChange}
-                    className="focus:border-green-600 focus:ring-green-600 rounded-md" // Green focus
+                    className="focus:border-green-600 focus:ring-green-600 rounded-md"
                   />
                 </div>
 
                 <div className="flex-1"> {/* Use flex-1 */}
-                  <Label htmlFor="endDate" value="End Date" className="text-green-800" /> {/* Green label */}
+                  <Label htmlFor="endDate" value="End Date" className="text-green-800" />
                   <TextInput
                     id="endDate"
                     name="endDate"
@@ -168,20 +168,20 @@ const CreateCampaignPage = () => {
                     required
                     value={formData.endDate}
                     onChange={handleChange}
-                    className="focus:border-green-600 focus:ring-green-600 rounded-md" // Green focus
+                    className="focus:border-green-600 focus:ring-green-600 rounded-md" 
                   />
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="category" value="Category" className="text-green-800" /> {/* Green label */}
+                <Label htmlFor="category" value="Category" className="text-green-800" /> 
                 <Select
                   id="category"
                   name="category"
                   required
                   value={formData.category}
                   onChange={handleChange}
-                  className="focus:border-green-600 focus:ring-green-600 rounded-md" // Green focus
+                  className="focus:border-green-600 focus:ring-green-600 rounded-md" 
                 >
                   <option value="">Select a category</option>
                   <option value="technology">Technology</option>
