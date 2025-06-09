@@ -3,15 +3,20 @@ import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Lock, Mail } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import authSvc from "../auth/auth.service";
 import { toast } from "react-toastify";
-import { useContext, useEffect, useState } from "react";
-import AuthContext from "../../context/auth.context";
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { axiosInstance } from "../../config/axois.config";
+import authSvc from "../../pages/auth/auth.service";
+
+import { useDispatch, useSelector } from "react-redux";
+import { setLoggedInUserForRedux, getLoggedInUserRedux } from "../../components/reducer/user.reducer"; // Adjust path to your user reducer
+import { RootState, AppDispatch } from "../../config/store.config";
 
 export const Signin = () => {
-    const { loggedInUser, setLoggedInUser } = useContext(AuthContext);
+    const loggedInUser = useSelector((state: RootState) => state.auth.loggedInUser);
+    const dispatch: AppDispatch = useDispatch();
+
     const LoginDTO = Yup.object({
         email: Yup.string().email("Invalid email format").required("Email is required"),
         password: Yup.string().required("Password is required"),
@@ -25,52 +30,43 @@ export const Signin = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (loggedInUser) {
-            toast.info("You are already logged in as " + loggedInUser.fullName);
-            // Navigate to /admin for simplicity, as per RouterConfig consolidation
+        // Corrected: Use loggedInUser.name consistent with your User interface and Redux state
+        if (loggedInUser && loggedInUser.name) {
+            toast.info("You are already logged in as " + loggedInUser.name);
             navigate('/admin');
         }
     }, [loggedInUser, navigate]);
 
-    const login = async (data: any) => {
-        try {
-            setLoading(true);
+ const login = async (data: any) => {
+  try {
+    setLoading(true);
+    console.log("Frontend: Sending login request with data:", data);
 
-            console.log("Frontend: Sending login request with data:", data);
-            // The axiosInstance.post returns the 'data' property of the response by default in your HttpService if used.
-            // If you are using axiosInstance directly, the response object contains 'data'.
-            // Given your log, 'response' itself already contains the payload.
-            const response: any = await axiosInstance.post("/auth/signin", data);
+    const responseData = await authSvc.signin(data);
 
-            // --- CRUCIAL LOGGING ---
-            console.log("Frontend: Full Axios Response Object from direct call:", response);
-            console.log("Frontend: Accessing response.token:", response.token); // Should now work
-            console.log("Frontend: Accessing response.refreshToken:", response.refreshToken); // Should now work
-            console.log("Frontend: Accessing response.userDetail:", response.userDetail); // Should work
-            // --- END CRUCIAL LOGGING ---
+    console.log("Frontend: Login Response:", responseData);
 
-            // FIX: Access tokens and userDetail directly from the 'response' object as per your latest console log
-            localStorage.setItem("_at", response.token);
-            localStorage.setItem("_rt", response.refreshToken);
+    if (responseData.token && responseData.userDetail) {
+      localStorage.setItem("_at", responseData.token);
+      localStorage.setItem("_rt", responseData.refreshToken);
 
-            if (response.userDetail) { // Check if userDetail exists
-                toast.success(`Welcome to ${response.userDetail.role} ${response.userDetail.name}`);
-                setLoggedInUser(response.userDetail); // Update AuthContext state
-                navigate("/admin"); // Navigate to admin dashboard
-            } else {
-                console.error("Frontend: userDetail missing in login response.");
-                toast.error("Login successful, but user data is incomplete. Please try again.");
-            }
-        } catch (exception: any) {
-            console.error("Frontend: Login error caught:", exception);
-            // Changed error message for better clarity if credentials don't match
-            const errorMessage = exception.response?.data?.message || "Invalid email or password.";
-            toast.error(errorMessage);
-        } finally {
-            setLoading(false);
-            console.log("Frontend: Loading set to false after login attempt.");
-        }
-    };
+      toast.success(`Welcome ${responseData.userDetail.role} ${responseData.userDetail.name}`);
+      dispatch(setLoggedInUserForRedux(responseData.userDetail));
+      navigate("/admin");
+    } else {
+      toast.error("Login failed: Incomplete response from server.");
+    }
+  } catch (exception: any) {
+    console.error("Frontend: Login error caught:", exception);
+    const errorMessage = exception.message || "Invalid email or password.";
+    toast.error(errorMessage);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-emerald-800 via-emerald-600 to-green-400 flex items-center justify-center p-4">
@@ -117,7 +113,6 @@ export const Signin = () => {
                         </div>
                     </div>
 
-                    {/* Forgot Password Link */}
                     <div className="text-right">
                         <NavLink
                             to="/forgot-password"
@@ -134,7 +129,6 @@ export const Signin = () => {
                     >
                         {loading ? "Signing In..." : "Sign In"}
                     </button>
-                    {/* Added Home Button */}
                     <NavLink
                         to="/"
                         className="w-full flex items-center justify-center bg-gray-200 text-gray-800 rounded-lg py-3 px-4 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transform transition hover:scale-105 mt-4"
@@ -195,7 +189,6 @@ export const ForgotPassword = () => {
                     >
                         {loading ? "Sending..." : "Send Reset Link"}
                     </button>
-                    {/* Added Home Button */}
                     <NavLink
                         to="/"
                         className="w-full flex items-center justify-center bg-gray-200 text-gray-800 rounded-lg py-3 px-4 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transform transition hover:scale-105 mt-4"

@@ -18,7 +18,6 @@ class HttpService {
 
   // Set headers based on the configuration passed
   #setHeaders = (config: HeaderConfigProps) => {
-    
     if (!config?.file) {
       this.headers = { 'Content-Type': 'application/json' };
     } else {
@@ -38,7 +37,6 @@ class HttpService {
       this.params = { ...config.params };
     }
   };
-  
 
   // POST request method
   postRequest = async (url: string, data: any = {}, config: HeaderConfigProps = {}) => {
@@ -50,7 +48,7 @@ class HttpService {
       });
       return response.data;
     } catch (error: any) {
-      this.#handleError(error);
+      throw this.#handleError(error);
     }
   };
 
@@ -62,11 +60,9 @@ class HttpService {
         headers: { ...this.headers },
         params: { ...this.params },
       });
-      // console.log(response)
-      return response;      // {data:any, message: "", meta: any}
-      // return response.data;
+      return response.data;
     } catch (error: any) {
-      this.#handleError(error);
+      throw this.#handleError(error);
     }
   };
 
@@ -80,7 +76,7 @@ class HttpService {
       });
       return response.data;
     } catch (error: any) {
-      this.#handleError(error);
+      throw this.#handleError(error);
     }
   };
 
@@ -93,7 +89,7 @@ class HttpService {
       });
       return response.data;
     } catch (error: any) {
-      this.#handleError(error);
+      throw this.#handleError(error);
     }
   };
 
@@ -106,22 +102,22 @@ class HttpService {
       });
       return response.data;
     } catch (error: any) {
-      this.#handleError(error);
+      throw this.#handleError(error);
     }
   };
 
   // Forgot Password Request
   forgotPasswordRequest = async ({ email, fullname }: { email: string; fullname: string }) => {
     try {
-        this.#setHeaders({});
-        const response = await axiosInstance.post("/auth/forgot-password", { email, fullname }, {
-            headers: { ...this.headers },
-        });
-        return response.data;
+      this.#setHeaders({});
+      const response = await axiosInstance.post("/auth/forgot-password", { email, fullname }, {
+        headers: { ...this.headers },
+      });
+      return response.data;
     } catch (error: any) {
-        this.#handleError(error);
+      throw this.#handleError(error);
     }
-};
+  };
 
   // Reset Password Request
   resetPasswordRequest = async (data: { forgetToken?: string; newPassword: string; confirmPassword: string }) => {
@@ -132,27 +128,28 @@ class HttpService {
       });
       return response.data;
     } catch (error: any) {
-      this.#handleError(error);
+      throw this.#handleError(error);
     }
   };
 
   // Centralized error handler
-  #handleError = (error: any) => {
-    if (error.response) {
-      const errorResponse: ErrorResponse = {
-        message: error.response.data.message || "An error occurred",
-        status: error.response.status,
-      };
-      console.error("Error Response:", errorResponse);
-      throw errorResponse;
-    } else if (error.request) {
-      console.error("No response received:", error.request);
-      throw new Error( "Network error: No response received from the server");
-    } else {
-      console.error("Error Setting Up Request:", error.message);
-      throw new Error(`Error: ${error.message}`);
-    }
-  };
+ #handleError = (error: any) => {
+  if (error.response) {
+    const errorResponse: ErrorResponse = {
+      message: error.response.data.message || "An error occurred",
+      status: error.response.status,
+    };
+    console.error("Error Response:", errorResponse);
+    return new Error(errorResponse.message);
+  } else if (error.request) {
+    console.error("No response received:", error.request);
+    return new Error("Network error: No response received from the server");
+  } else {
+    console.error("Error Setting Up Request:", error.message);
+    return new Error(`Error: ${error.message}`);
+  }
+};
+
 }
 
 export default HttpService;

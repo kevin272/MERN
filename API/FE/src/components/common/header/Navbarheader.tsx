@@ -1,28 +1,29 @@
-import { Button, Navbar } from "flowbite-react";
+import React from "react"; // No longer need useEffect for initial user fetch
 import { NavLink, useNavigate } from "react-router-dom";
-import Logo from "../../../assets/logo2.svg";
-import { useState, useEffect } from "react";
-import authSvc from "../../../pages/auth/auth.service";
+import { Button, Navbar } from "flowbite-react"; // Assuming these are from flowbite-react
+import Logo from "../../../assets/logo2.svg"; // Adjust path as necessary
+
+// Import Redux hooks and types
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "../../../config/store.config"; // Adjust path to your store types
+import { logoutUser } from "../../reducer/user.reducer"; // Import the logoutUser action from your user slice
 
 export const Homeheader = () => {
-  const [loggedInUser, setLoggedInUser] = useState<any>(null);
+  // REMOVED: No longer using local state for loggedInUser or direct authSvc calls here.
+  // const [loggedInUser, setLoggedInUser] = useState<any>(null);
+  // const getLoggedInUser = async () => { ... };
+  // useEffect(() => { ... }, []);
+
+  // Access loggedInUser directly from the Redux store
+  // Assuming your userReducer is mounted under the 'auth' key in your store.
+  const loggedInUser = useSelector((state: RootState) => state.auth.loggedInUser);
+  const dispatch: AppDispatch = useDispatch(); // Initialize useDispatch
   const navigate = useNavigate();
 
-  const getLoggedInUser = async () => {
-    try {
-      const response: any = await authSvc.getRequest("/auth/me", { auth: true });
-      setLoggedInUser(response.data);
-    } catch (exception) {
-      console.log(exception);
-    }
+  const handleLogout = () => {
+    dispatch(logoutUser()); // Dispatch the Redux logout action
+    navigate("/signin"); // Redirect to signin page after logout
   };
-
-  useEffect(() => {
-    const token = localStorage.getItem("_at");
-    if (token) {
-      getLoggedInUser();
-    }
-  }, []);
 
   return (
     <Navbar fluid className="bg-white shadow-md h-20 sm:h-24 px-4 sm:px-8">
@@ -41,14 +42,18 @@ export const Homeheader = () => {
                 }`
               }
             >
-              {loggedInUser.profilePic && (
+              {loggedInUser.image && ( // FIX: Use loggedInUser.image for profile picture (as per User interface)
                 <img
-                  src={loggedInUser.profilePic}
+                  src={loggedInUser.image} // FIX: Use loggedInUser.image
                   alt="Profile"
                   className="w-8 h-8 rounded-full object-cover border-2 border-blue-500"
+                  onError={(e) => { // Fallback for broken images
+                    e.currentTarget.src = "https://placehold.co/100x100/CCCCCC/FFFFFF?text=User";
+                    e.currentTarget.onerror = null; // Prevent infinite loop
+                  }}
                 />
               )}
-              {loggedInUser.fullname}
+              {loggedInUser.name}
             </NavLink>
 
             {loggedInUser.role === "admin" && (
@@ -59,6 +64,14 @@ export const Homeheader = () => {
                 Admin Panel
               </Button>
             )}
+
+            {/* Add a Logout Button */}
+            <Button
+              onClick={handleLogout}
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm"
+            >
+              Logout
+            </Button>
           </>
         ) : (
           <Button
