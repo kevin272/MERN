@@ -1,51 +1,28 @@
-import React, { useState, useEffect, useContext } from 'react';
-import CampaignSvc from '../campaign/campaigns.service';
-import AuthContext from '../../context/auth.context'; 
+import React, { useEffect, useContext } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchUserDonations } from '../../components/reducer/donation.reducer';
+import { RootState, AppDispatch } from '../../config/store.config';
+//import AuthContext from '../../context/auth.context';
 import LoadingComponent from '../../components/common/loading/loading.component';
 
-
-interface Donation {
-    campaignId: string;
-    campaignTitle: string;
-    amount: number;
-    donationDate?: string; 
-}
-
 const UserDonationDashboard = () => {
-    const [donations, setDonations] = useState<Donation[]>([]); // Use the defined interface
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const { loggedInUser } = useContext(AuthContext); 
+    const dispatch: AppDispatch = useDispatch();
+    const { donations, loading, error } = useSelector((state: RootState) => state.donations);
+//    const { loggedInUser } = useContext(AuthContext);
+const loggedInUser = useSelector((state: RootState) => state.auth.loggedInUser);
+
+console.log("🧠 loggedInUser in Donation Dashboard:", loggedInUser);
 
     useEffect(() => {
-        const fetchDonationHistory = async () => {
-
-            setLoading(true);
-            setError(null);
-
-            try {
-                const response = await CampaignSvc.getUserDonationHistory(loggedInUser.id);
-                setDonations(response?.data || []); // Access the 'result' property from the backend response
-            } catch (err: any) {
-                console.error("Failed to fetch donation history:", err);
-                setError(err.message || "Failed to fetch donation history.");
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        if (loggedInUser) {
-            fetchDonationHistory();
-        }
-    }, [loggedInUser]);
-
-    if (loading) {
-        return <LoadingComponent />;
+    if (loggedInUser?._id) {
+        console.log("✅ Dispatching fetchUserDonations with ID:", loggedInUser._id);
+        dispatch(fetchUserDonations(loggedInUser._id));
     }
+}, [dispatch, loggedInUser?._id]);
 
-    if (error) {
-        return <div className="text-red-500 p-4 bg-red-100 rounded-md border border-red-200">{error}</div>;
-    }
+
+    if (loading) return <LoadingComponent />;
+    if (error) return <div className="text-red-500 p-4 bg-red-100 rounded-md">{error}</div>;
 
     return (
         <div className="container mx-auto p-4 md:p-8">
@@ -55,26 +32,16 @@ const UserDonationDashboard = () => {
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
                             <tr>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Campaign Title
-                                </th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Amount Donated
-                                </th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Donation Date
-                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Campaign Title</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount Donated</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Donation Date</th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                             {donations.map((donation) => (
-                                <tr key={donation.campaignId}> 
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                        {donation.campaignTitle}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                        ${donation.amount ? donation.amount.toFixed(2) : '0.00'}
-                                    </td>
+                                <tr key={donation.campaignId}>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{donation.campaignTitle}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${donation.amount.toFixed(2)}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                         {donation.donationDate ? new Date(donation.donationDate).toLocaleDateString() : 'N/A'}
                                     </td>

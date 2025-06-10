@@ -1,28 +1,21 @@
-import { Button, Navbar } from "flowbite-react";
+import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { Button, Navbar } from "flowbite-react";
 import Logo from "../../../assets/logo2.svg";
-import { useState, useEffect } from "react";
-import authSvc from "../../../pages/auth/auth.service";
+
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "../../../config/store.config";
+import { logoutUser } from "../../reducer/user.reducer";
 
 export const Homeheader = () => {
-  const [loggedInUser, setLoggedInUser] = useState<any>(null);
+  const loggedInUser = useSelector((state: RootState) => state.auth.loggedInUser);
+  const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
 
-  const getLoggedInUser = async () => {
-    try {
-      const response: any = await authSvc.getRequest("/auth/me", { auth: true });
-      setLoggedInUser(response.data);
-    } catch (exception) {
-      console.log(exception);
-    }
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    navigate("/signin");
   };
-
-  useEffect(() => {
-    const token = localStorage.getItem("_at");
-    if (token) {
-      getLoggedInUser();
-    }
-  }, []);
 
   return (
     <Navbar fluid className="bg-white shadow-md h-20 sm:h-24 px-4 sm:px-8">
@@ -41,14 +34,18 @@ export const Homeheader = () => {
                 }`
               }
             >
-              {loggedInUser.profilePic && (
+              {loggedInUser.image && (
                 <img
-                  src={loggedInUser.profilePic}
+                  src={loggedInUser.image}
                   alt="Profile"
                   className="w-8 h-8 rounded-full object-cover border-2 border-blue-500"
+                  onError={(e) => {
+                    e.currentTarget.src = "https://placehold.co/100x100/CCCCCC/FFFFFF?text=User";
+                    e.currentTarget.onerror = null;
+                  }}
                 />
               )}
-              {loggedInUser.fullname}
+              {loggedInUser.name}
             </NavLink>
 
             {loggedInUser.role === "admin" && (
@@ -59,6 +56,13 @@ export const Homeheader = () => {
                 Admin Panel
               </Button>
             )}
+
+            <Button
+              onClick={handleLogout}
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm"
+            >
+              Logout
+            </Button>
           </>
         ) : (
           <Button
