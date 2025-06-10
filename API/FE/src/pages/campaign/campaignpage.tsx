@@ -15,7 +15,6 @@ const CampaignPage = () => {
             setLoading(true);
             setError(null);
             try {
-                // Fetch, for example, 6 active campaigns for the public view
                 const response: any = await CampaignSvc.getActiveCampaignsForPublicHome(6); 
                 console.log("Public Campaign List API Response (from campaignpage.tsx):", response);
 

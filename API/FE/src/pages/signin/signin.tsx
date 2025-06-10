@@ -30,7 +30,6 @@ export const Signin = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Corrected: Use loggedInUser.name consistent with your User interface and Redux state
         if (loggedInUser && loggedInUser.name) {
             toast.info("You are already logged in as " + loggedInUser.name);
             navigate('/admin');
