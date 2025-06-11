@@ -4,6 +4,8 @@ import CampaignSvc from "./campaigns.service";
 import LoadingComponent from "../../components/common/loading/loading.component"; 
 import { Link } from "react-router-dom"; 
 import { toast } from "react-toastify";
+import { HiArrowNarrowRight } from "react-icons/hi";
+
 
 const CampaignPage = () => {
     const [campaigns, setCampaigns] = useState<any[]>([]);
@@ -60,49 +62,60 @@ const CampaignPage = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                         {campaigns.length > 0 ? (
                             campaigns.map((campaign) => (
-                                <div
-                                    key={campaign._id} 
-                                    className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden 
-                                               transform transition-all duration-300 hover:scale-105 hover:shadow-xl
-                                               border border-emerald-100 dark:border-gray-700"
-                                >
-                                    {/* Campaign Image */}
-                                    <img
-                                        className="w-full h-48 object-cover object-center rounded-t-xl"
-                                        src={campaign.image}
-                                        alt={campaign.title}
-                                        onError={(e: any) => {
-                                            e.target.onerror = null; 
-                                            e.target.src = "https://placehold.co/400x300/e0e0e0/555555?text=No+Image"; // Fallback image
-                                        }}
-                                    />
-                                    {/* Campaign Details */}
-                                    <div className="p-6">
-                                        <h2 className="text-xl font-semibold text-emerald-800 dark:text-emerald-300 mb-2 line-clamp-2">
-                                            {campaign.title}
-                                        </h2>
-                                        <p className="text-gray-700 dark:text-gray-300 text-sm mb-4 line-clamp-3">
-                                            {campaign.description}
-                                        </p>
-                                        <div className="flex justify-between items-center mb-4">
-                                            <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
-                                                Goal: <span className="text-emerald-700 dark:text-emerald-400">${campaign.goalAmount.toLocaleString()}</span>
-                                            </span>
-                                            <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
-                                                Raised: <span className="text-emerald-700 dark:text-emerald-400">${campaign.raisedAmount.toLocaleString()}</span>
-                                            </span>
-                                        </div>
-                                        {/* Learn More Button */}
-                                        <Link
-                                            to={`/campaign/${campaign._id}`}
-                                            className="inline-block w-full text-center bg-emerald-700 text-white px-4 py-2 rounded-lg 
-                                                       hover:bg-emerald-800 transition duration-300 transform hover:scale-103
-                                                       font-semibold shadow-md"
-                                        >
-                                            Learn More
-                                        </Link>
-                                    </div>
-                                </div>
+                                <article
+  key={campaign._id}
+  className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden 
+             transform transition-all duration-300 hover:scale-105 hover:shadow-xl
+             border border-emerald-100 dark:border-gray-700 flex flex-col"
+>
+  {/* Image */}
+  <img
+    className="w-full h-48 object-cover object-center rounded-t-xl"
+    src={campaign.image}
+    alt={campaign.title}
+    onError={(e: any) => {
+      e.target.onerror = null;
+      e.target.src = "https://placehold.co/400x300/e0e0e0/555555?text=No+Image";
+    }}
+  />
+
+  {/* Content */}
+  <div className="p-6 flex-1 flex flex-col">
+    <h2 className="text-xl font-semibold text-emerald-800 dark:text-emerald-300 mb-2 line-clamp-2">
+      {campaign.title}
+    </h2>
+    <p className="text-gray-700 dark:text-gray-300 text-sm mb-4 line-clamp-3">
+      {campaign.description}
+    </p>
+
+    {/* Progress Info */}
+    <div className="mb-4">
+      <div className="flex justify-between text-sm font-medium text-gray-600 dark:text-gray-400">
+        <span>Goal: ${campaign.goalAmount.toLocaleString()}</span>
+        <span>Raised: ${campaign.raisedAmount.toLocaleString()}</span>
+      </div>
+      {/* Progress bar */}
+      <div className="w-full h-2 bg-emerald-100 dark:bg-gray-700 rounded-full mt-2">
+        <div
+          className="h-full bg-emerald-600 rounded-full transition-all duration-300"
+          style={{
+            width: `${Math.min((campaign.raisedAmount / campaign.goalAmount) * 100, 100)}%`,
+          }}
+        ></div>
+      </div>
+    </div>
+
+    {/* CTA Button */}
+    <Link
+      to={`/campaign/${campaign._id}`}
+      className="mt-auto inline-flex items-center justify-center gap-2 bg-emerald-700 text-white px-4 py-2 rounded-lg 
+                 hover:bg-emerald-800 transition duration-300 transform hover:scale-103 font-semibold shadow-md"
+    >
+      Learn More
+      <HiArrowNarrowRight className="text-lg" />
+    </Link>
+  </div>
+</article>
                             ))
                         ) : (
                             // No Campaigns Found Message
