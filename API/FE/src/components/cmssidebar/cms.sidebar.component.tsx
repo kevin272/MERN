@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { HiDocumentAdd, HiHome, HiUserAdd, HiCurrencyDollar } from "react-icons/hi"; // Added HiCurrencyDollar for donations
+import { HiDocumentAdd, HiHome, HiUserAdd, HiCurrencyDollar, HiChatAlt2  } from "react-icons/hi"; // Added HiCurrencyDollar for donations
 import { NavLink } from "react-router-dom";
 
 // Define the menu items, now including Donation History
@@ -7,7 +7,8 @@ const adminMenu = [
   { name: "Home", url: "/admin", icons: <HiHome className="w-5 h-5 text-gray-600 group-hover:text-emerald-600 transition-colors" /> },
   { name: "Team Member Management", url: "/admin/users", icons: <HiUserAdd className="w-5 h-5 text-gray-600 group-hover:text-emerald-600 transition-colors" /> },
   { name: "Campaign Management", url: "/admin/campaign", icons: <HiDocumentAdd className="w-5 h-5 text-gray-600 group-hover:text-emerald-600 transition-colors" /> },
-  { name: "Donation History", url: "/admin/donations", icons: <HiCurrencyDollar className="w-5 h-5 text-gray-600 group-hover:text-emerald-600 transition-colors" /> }, // New link
+  { name: "Donation History", url: "/admin/donations", icons: <HiCurrencyDollar className="w-5 h-5 text-gray-600 group-hover:text-emerald-600 transition-colors" /> },
+  { name: "Chatlist", url: "/admin/chat", icons: <HiChatAlt2 className="w-5 h-5 text-gray-600 group-hover:text-emerald-600 transition-colors" /> },
 ];
 
 const CMSSidebar = () => {

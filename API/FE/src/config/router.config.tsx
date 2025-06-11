@@ -10,8 +10,6 @@ import {
     Campaignlistingpage,
     CampaignEditPage,
 } from '../pages/campaign/index';
-// import AuthContext from '../context/auth.context';
-// import authSvc from '../pages/auth/auth.service';
 import AdminLayout from '../layout/cms.page';
 import { AdminDashboard } from '../pages/dashboard';
 import CheckPermission from './rbac.config';
@@ -30,29 +28,31 @@ import {
 } from '../pages/Our Team/exporting';
 import OverallDonationSummary from '../pages/dashboard/donation.summary';
 import UserDonationDashboard from '../pages/dashboard/userdonation.dashboard';
-import ChatViewPage from '../pages/chat/chat.view';
+import ChatViewPage from '../pages/chat/chat.view'; // This is your admin chat page
+import GuestChatPage from '../components/chat/guest.chat'; // This is your guest chat page
 
-//REDUX
+// REDUX Imports
 import { useDispatch, useSelector } from 'react-redux';
-import { getLoggedInUserRedux, setLoggedInUserForRedux } from '../components/reducer/user.reducer'; 
-import { RootState, AppDispatch } from './store.config'; 
+import { getLoggedInUserRedux, setLoggedInUserForRedux } from '../components/reducer/user.reducer';
+import { RootState, AppDispatch } from './store.config';
+
 export const Routerconfig = () => {
     const dispatch: AppDispatch = useDispatch();
     const authLoading = useSelector((state: RootState) => state.auth.authLoading);
     const loggedInUser = useSelector((state: RootState) => state.auth.loggedInUser);
 
+    // Use a ref to ensure initial auth check runs only once per app lifecycle
     const initialAuthCheckPerformed = useRef(false);
 
+    // Detailed console logging for render cycles
     console.group("Routerconfig Render Cycle");
     console.log("  Current authLoading state (from Redux):", authLoading);
     console.log("  Current loggedInUser state (from Redux):", loggedInUser);
     console.log("  initialAuthCheckPerformed.current (ref value):", initialAuthCheckPerformed.current);
     console.groupEnd();
 
-
     useEffect(() => {
         // This useEffect runs once on mount to kick off the initial auth check.
-
         console.groupCollapsed("Routerconfig useEffect Triggered");
         console.log("  initialAuthCheckPerformed.current at useEffect start:", initialAuthCheckPerformed.current);
 
@@ -68,6 +68,7 @@ export const Routerconfig = () => {
                 dispatch(getLoggedInUserRedux());
             } else {
                 // If no token exists, explicitly set loggedInUser to null and authLoading to false.
+                // This ensures the loading state resolves even if no token is found.
                 console.log("  Routerconfig: No token, dispatching setLoggedInUserForRedux(null).");
                 dispatch(setLoggedInUserForRedux(null)); // This action sets authLoading: false in the slice
             }
@@ -78,6 +79,7 @@ export const Routerconfig = () => {
     }, [dispatch]); // Dependency on dispatch is good practice, but it's stable.
 
     // Display a global loading component while the authentication status is being determined.
+    // This is critical to prevent rendering protected routes before auth state is known.
     if (authLoading) {
         console.log("Routerconfig: authLoading is TRUE. Displaying LoadingComponent.");
         return <LoadingComponent />;
@@ -105,9 +107,10 @@ export const Routerconfig = () => {
                     <Route path="/forgot-password" element={<ForgotPassword />} />
                     <Route path="/reset-password/:token" element={<ResetPassword />} />
                     <Route path="/activate/:token" element={<UserActivation />} />
-                    <Route path="/chat/view" element={<ChatViewPage />} />
-                    
-                    
+
+                    {/* Guest Chat Route - Publicly accessible */}
+                    <Route path="/chat/guest" element={<GuestChatPage />} />
+
                     {/* Catch-all for unknown paths */}
                     <Route path="*" element={<Errorpage url="/" label="Go To Home" />} />
                 </Route>
@@ -119,7 +122,8 @@ export const Routerconfig = () => {
                 <Route
                     path="/admin"
                     element={
-
+                        // CheckPermission uses loggedInUser and authLoading from Redux state
+                        // It will only render AdminLayout if permissions are met
                         <CheckPermission allowedBy={['admin', 'member']}>
                             <AdminLayout />
                         </CheckPermission>
@@ -141,6 +145,9 @@ export const Routerconfig = () => {
                     <Route path="users" element={<UserListingPage />} />
                     <Route path="users/create" element={<UserCreatePage />} />
                     <Route path="users/edit/:id" element={<UserEditPage />} />
+
+                    {/* Chat Management (Admin Panel) */}
+                    <Route path="chat" element={<ChatViewPage />} />
 
                     {/* Catch-all for unknown paths under /admin */}
                     <Route path="*" element={<Errorpage url="/admin" label="Go To Dashboard" />} />

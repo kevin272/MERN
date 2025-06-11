@@ -1,5 +1,7 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
+import { HiChat } from "react-icons/hi";
+
 
 const Contactform = () => {
   const [name, setName] = useState<string>("");
@@ -86,6 +88,15 @@ const Contactform = () => {
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
           ></iframe>
+        </div>
+        <div className="flex justify-center mb-4">
+          <button
+            onClick={() => window.location.href = "/chat/guest"}
+            className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-6 rounded shadow transition-colors duration-300 flex items-center gap-2"
+          >
+            <HiChat />
+            Chat with us
+          </button>
         </div>
 
         {/* Contact Form */}

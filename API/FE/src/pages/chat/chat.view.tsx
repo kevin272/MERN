@@ -1,130 +1,245 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { socket } from '../../config/chat.config'; // Still used for notifications/joining rooms
+import { useSelector } from "react-redux";
+import { RootState } from "../../config/store.config";
+import chatService from './chat.service'; // Import the chat service for API calls
 
-// Define a simple message interface for dummy data
 interface Message {
-  id: string;
-  sender: 'user' | 'other'; // 'user' is the current logged-in user, 'other' is the person they are chatting with
+  _id: string; // MongoDB document ID
+  senderId: string;
+  senderName: string;
   text: string;
-  timestamp: string;
+  timestamp: string; // Stored as ISO string, converted to readable string for display
+  isGuest?: boolean;
 }
 
-// Define a simple chat user interface
 interface ChatUser {
-  id: string;
-  name: string;
-  lastMessagePreview: string;
-  lastMessageTime: string;
-  unreadCount: number;
-  profilePic: string; // Placeholder for profile picture URL
+  _id: string; // MongoDB document ID (for conversation)
+  guestId: string; // The ID of the guest in this conversation
+  guestName: string;
+  lastMessageText: string;
+  lastMessageTimestamp: string; // Stored as ISO string, converted for display
+  unreadCount: number; // This would need backend implementation to track per admin
+  profilePic: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export const ChatViewPage: React.FC = () => {
-  // Dummy messages for initial display - these will be associated with the selected chat user
-  const initialMessages: { [key: string]: Message[] } = {
-    'user1': [
-      { id: '1', sender: 'other', text: 'Hello! How can I help you today?', timestamp: '10:00 AM' },
-      { id: '2', sender: 'user', text: 'Hi there! I have a question about campaigns.', timestamp: '10:01 AM' },
-      { id: '3', sender: 'other', text: 'Certainly, what would you like to know?', timestamp: '10:02 AM' },
-    ],
-    'user2': [
-      { id: '4', sender: 'other', text: 'Hey, checking in on the new donation feature.', timestamp: 'Yesterday' },
-      { id: '5', sender: 'user', text: 'It\'s live! Let me know if you have any feedback.', timestamp: 'Yesterday' },
-    ],
-    'user3': [
-      { id: '6', sender: 'other', text: 'Good morning, just wanted to say thanks!', timestamp: 'Mon' },
-      { id: '7', sender: 'user', text: 'Anytime! Happy to help.', timestamp: 'Mon' },
-      { id: '8', sender: 'other', text: 'I appreciate your quick response.', timestamp: 'Mon' },
-    ],
+  const loggedInUser = useSelector((state: RootState) => state.auth.loggedInUser);
+
+  const [chatUsers, setChatUsers] = useState<ChatUser[]>([]);
+  const [selectedChatUser, setSelectedChatUser] = useState<ChatUser | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [newMessage, setNewMessage] = useState<string>('');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [loadingChats, setLoadingChats] = useState(true);
+  const [loadingMessages, setLoadingMessages] = useState(false);
+  const [chatError, setChatError] = useState<string | null>(null);
+
+  // Function to fetch chat users from the backend
+  const fetchChatUsers = async () => {
+    if (!loggedInUser || loggedInUser.role !== 'admin') {
+      setChatError("Access Denied: Not an admin.");
+      setLoadingChats(false);
+      return;
+    }
+    setLoadingChats(true);
+    try {
+      const users = await chatService.getAdminConversations();
+      // Map timestamps to Date objects for consistent sorting
+      const mappedUsers = users.map((user: any) => ({
+        ...user,
+        lastMessageTimestamp: new Date(user.lastMessageTimestamp).toLocaleString(), // Convert to locale string for display
+        createdAt: new Date(user.createdAt).toLocaleString(),
+        updatedAt: new Date(user.updatedAt).toLocaleString(),
+        profilePic: `https://placehold.co/100x100/66BB6A/FFFFFF?text=${(user.guestName?.charAt(0) || 'U').toUpperCase()}`,
+      }));
+      setChatUsers(mappedUsers);
+      console.log("Fetched chat users from MongoDB:", users.length);
+    } catch (error: any) {
+      console.error("Error fetching chat users:", error);
+      setChatError(error.message || "Failed to load chats.");
+    } finally {
+      setLoadingChats(false);
+    }
   };
 
-  // Dummy chat users for the chat list
-  const [chatUsers, setChatUsers] = useState<ChatUser[]>([
-    { id: 'user1', name: 'Alice Smith', lastMessagePreview: 'Certainly, what would you like...', lastMessageTime: '10:02 AM', unreadCount: 0, profilePic: 'https://placehold.co/100x100/A0DAA9/FFFFFF?text=AS' },
-    { id: 'user2', name: 'Bob Johnson', lastMessagePreview: 'It\'s live! Let me know...', lastMessageTime: 'Yesterday', unreadCount: 2, profilePic: 'https://placehold.co/100x100/81C784/FFFFFF?text=BJ' },
-    { id: 'user3', name: 'Charlie Brown', lastMessagePreview: 'I appreciate your quick response.', lastMessageTime: 'Mon', unreadCount: 0, profilePic: 'https://placehold.co/100x100/66BB6A/FFFFFF?text=CB' },
-    { id: 'user4', name: 'Diana Prince', lastMessagePreview: 'New campaign proposal...', lastMessageTime: 'Last Week', unreadCount: 1, profilePic: 'https://placehold.co/100x100/4CAF50/FFFFFF?text=DP' },
-  ]);
+  // Function to fetch messages for the selected chat
+  const fetchMessages = async (conversationId: string) => {
+    if (!loggedInUser || loggedInUser.role !== 'admin') return;
+    setLoadingMessages(true);
+    try {
+      const msgs = await chatService.getMessagesByConversationId(conversationId);
+      // Ensure timestamps are correctly formatted for display if needed
+      const mappedMsgs = msgs.map((msg: any) => ({
+        ...msg,
+        timestamp: new Date(msg.timestamp).toLocaleString(), // Convert to locale string for display
+      }));
+      setMessages(mappedMsgs);
+      console.log(`Fetched messages for conversation ${conversationId}:`, msgs.length);
+    } catch (error: any) {
+      console.error(`Error fetching messages for ${conversationId}:`, error);
+      setChatError(error.message || "Failed to load messages.");
+    } finally {
+      setLoadingMessages(false);
+    }
+  };
 
-  const [selectedChatUser, setSelectedChatUser] = useState<ChatUser | null>(chatUsers[0] || null);
-  const [messages, setMessages] = useState<Message[]>(selectedChatUser ? initialMessages[selectedChatUser.id] || [] : []);
-  const [newMessage, setNewMessage] = useState<string>('');
-  const messagesEndRef = useRef<HTMLDivElement>(null); // Ref for scrolling to the latest message
+  // Initial fetch of chat users and setup of Socket.io listener for new chat notifications
+  useEffect(() => {
+    if (loggedInUser && loggedInUser.role === 'admin') {
+      fetchChatUsers(); // Initial fetch
 
-  // Effect to update messages when a new chat user is selected
+      // Socket.io for notifications (e.g., new guest chat or message in existing chat)
+      socket.connect();
+      const adminInboxRoom = 'admin_inbox';
+      socket.emit('joinRoom', adminInboxRoom, loggedInUser._id);
+      console.log(`FRONTEND ADMIN: Admin ${loggedInUser.name} (${loggedInUser._id}) joined admin inbox: ${adminInboxRoom}`);
+
+      // Listener for new guest message notifications
+      socket.on('newGuestMessageNotification', (data: { conversationId: string; guestId: string; guestName: string; preview: string; timestamp: string }) => {
+        console.log("Socket: New guest message notification received:", data);
+        fetchChatUsers(); // Re-fetch chats to update the list, especially if it's a new chat
+        if (selectedChatUser && selectedChatUser._id === data.conversationId) {
+            fetchMessages(data.conversationId); // Also fetch messages if it's the current chat
+        }
+      });
+
+      // Listener for general message updates in active conversation (optional, for explicit updates)
+      socket.on('messageUpdateNotification', (data: { conversationId: string; messageId: string }) => {
+        console.log("Socket: Message update notification received for conversation:", data.conversationId);
+        if (selectedChatUser && selectedChatUser._id === data.conversationId) {
+          fetchMessages(data.conversationId); // Re-fetch messages for the active conversation
+        }
+      });
+
+
+      return () => {
+        socket.off('newGuestMessageNotification');
+        socket.off('messageUpdateNotification');
+        socket.disconnect();
+      };
+    } else if (loggedInUser && loggedInUser.role !== 'admin') {
+      socket.disconnect();
+      setChatError("Access Denied: Not an admin.");
+    }
+  }, [loggedInUser, selectedChatUser]); // Add selectedChatUser to dependencies for messageUpdateNotification
+
+  // Effect to fetch messages when a new chat is selected
   useEffect(() => {
     if (selectedChatUser) {
-      setMessages(initialMessages[selectedChatUser.id] || []);
-      // Mark messages as read when selected
-      setChatUsers(prevUsers => prevUsers.map(user =>
-        user.id === selectedChatUser.id ? { ...user, unreadCount: 0 } : user
+      fetchMessages(selectedChatUser._id);
+      // Reset unread count for selected chat (this would typically involve a backend call to mark as read)
+      setChatUsers(prevUsers => prevUsers.map(user => 
+          user._id === selectedChatUser._id ? { ...user, unreadCount: 0 } : user
       ));
     } else {
-      setMessages([]);
+      setMessages([]); // Clear messages if no chat is selected
     }
   }, [selectedChatUser]);
 
-  // Effect to scroll to the bottom of the messages list on new message or initial load
+  // Scroll to bottom on new messages
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newMessage.trim() && selectedChatUser) {
-      const newMsg: Message = {
-        id: Date.now().toString(),
-        sender: 'user',
-        text: newMessage.trim(),
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      };
-      setMessages((prevMessages) => [...prevMessages, newMsg]);
-      setNewMessage('');
+    if (newMessage.trim() && selectedChatUser && loggedInUser && loggedInUser.role === 'admin') {
+      try {
+        const messagePayload = {
+          conversationId: selectedChatUser._id, // Send to the conversation ID
+          senderId: loggedInUser._id,
+          senderName: loggedInUser.name,
+          text: newMessage.trim(),
+          isGuest: false, // Admin is not a guest
+        };
 
-      // Optionally, update the last message preview for the selected user in the chat list
-      setChatUsers(prevUsers => prevUsers.map(user =>
-        user.id === selectedChatUser.id ? {
-          ...user,
-          lastMessagePreview: newMsg.text,
-          lastMessageTime: newMsg.timestamp,
-        } : user
-      ));
+        await chatService.sendMessage(messagePayload);
+        setNewMessage('');
+        // Messages will be fetched via the messageUpdateNotification from socket
+
+        // Optimistically update the last message preview in the sidebar
+        setChatUsers(prevUsers => prevUsers.map(user =>
+          user._id === selectedChatUser._id ? {
+            ...user,
+            lastMessageText: newMessage.trim(),
+            lastMessageTimestamp: new Date().toISOString(), // Use ISO string for consistency
+          } : user
+        ));
+
+      } catch (error: any) {
+        console.error("Error sending message:", error);
+        setChatError(error.message || "Failed to send message.");
+      }
     }
   };
+
+  // Show loading/error states
+  if (loadingChats) {
+    return (
+        <div className="flex justify-center items-center h-screen bg-gray-50">
+            <p className="text-gray-600">Loading chats...</p>
+        </div>
+    );
+  }
+
+  if (chatError) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-red-50">
+        <p className="text-red-700 font-bold">{chatError}</p>
+      </div>
+    );
+  }
+
+  // Ensure only admins can see this page after loading and error checks
+  if (loggedInUser?.role !== 'admin') {
+    return (
+      <div className="flex justify-center items-center h-screen bg-red-50">
+        <p className="text-red-700 font-bold">Access Denied: You must be an administrator to view this page.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-gray-50 font-sans antialiased text-gray-800">
       {/* Chat List Sidebar */}
       <div className="w-80 bg-white shadow-lg flex flex-col border-r border-gray-200">
-        <div className="p-4 bg-emerald-700 text-white font-bold text-xl rounded-tl-2xl">Chats</div>
+        <div className="p-4 bg-emerald-700 text-white font-bold text-xl rounded-tl-2xl">Active Chats</div>
         <div className="flex-grow overflow-y-auto">
-          {chatUsers.map((user) => (
-            <div
-              key={user.id}
-              className={`flex items-center p-4 border-b border-gray-100 cursor-pointer transition-colors duration-200
-                ${selectedChatUser?.id === user.id ? 'bg-emerald-50' : 'hover:bg-gray-50'}`}
-              onClick={() => setSelectedChatUser(user)}
-            >
-              <img
-                src={user.profilePic}
-                alt={user.name}
-                className="w-12 h-12 rounded-full object-cover mr-3 border-2 border-emerald-300"
-              />
-              <div className="flex-grow">
-                <h3 className="font-semibold text-gray-800">{user.name}</h3>
-                <p className="text-sm text-gray-600 truncate">{user.lastMessagePreview}</p>
+          {chatUsers.length > 0 ? (
+            chatUsers.map((user) => (
+              <div
+                key={user._id} // Use MongoDB _id as key
+                className={`flex items-center p-4 border-b border-gray-100 cursor-pointer transition-colors duration-200
+                  ${selectedChatUser?._id === user._id ? 'bg-emerald-50' : 'hover:bg-gray-50'}`}
+                onClick={() => setSelectedChatUser(user)}
+              >
+                <img
+                  src={user.profilePic}
+                  alt={user.guestName}
+                  className="w-12 h-12 rounded-full object-cover mr-3 border-2 border-emerald-300"
+                />
+                <div className="flex-grow">
+                  <h3 className="font-semibold text-gray-800">{user.guestName}</h3>
+                  <p className="text-sm text-gray-600 truncate">{user.lastMessageText}</p>
+                </div>
+                <div className="flex flex-col items-end text-xs text-gray-500">
+                  <span>{new Date(user.lastMessageTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                  {user.unreadCount > 0 && ( // Unread count is a placeholder for now
+                    <span className="mt-1 bg-emerald-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs font-bold">
+                      {user.unreadCount}
+                    </span>
+                  )}
+                </div>
               </div>
-              <div className="flex flex-col items-end text-xs text-gray-500">
-                <span>{user.lastMessageTime}</span>
-                {user.unreadCount > 0 && (
-                  <span className="mt-1 bg-emerald-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs font-bold">
-                    {user.unreadCount}
-                  </span>
-                )}
-              </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <div className="p-4 text-center text-gray-500">No active chats.</div>
+          )}
         </div>
       </div>
 
@@ -134,28 +249,34 @@ export const ChatViewPage: React.FC = () => {
           {/* Chat Header */}
           <div className="bg-emerald-700 text-white p-4 rounded-t-2xl shadow-md flex items-center justify-between">
             <h2 className="text-xl font-bold">
-              {selectedChatUser ? `Chat with ${selectedChatUser.name}` : 'Select a chat'}
+              {selectedChatUser ? `Chat with ${selectedChatUser.guestName}` : 'Select a chat'}
             </h2>
           </div>
 
           {/* Messages Area */}
           <div className="flex-grow p-4 overflow-y-auto space-y-4">
-            {selectedChatUser ? (
+            {loadingMessages ? (
+              <div className="flex items-center justify-center h-full text-gray-500">
+                Loading messages...
+              </div>
+            ) : selectedChatUser ? (
               messages.map((msg) => (
                 <div
-                  key={msg.id}
-                  className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                  key={msg._id} // Use MongoDB _id as key
+                  className={`flex ${msg.senderId === loggedInUser?._id ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
                     className={`max-w-[70%] p-3 rounded-lg shadow-sm ${
-                      msg.sender === 'user'
+                      msg.senderId === loggedInUser?._id
                         ? 'bg-emerald-500 text-white rounded-br-none'
                         : 'bg-gray-100 text-gray-800 rounded-bl-none'
                     }`}
                   >
-                    <p className="text-sm">{msg.text}</p>
+                    <p className="text-sm">
+                      <strong>{msg.senderName}:</strong> {msg.text}
+                    </p>
                     <span className="text-xs opacity-75 mt-1 block text-right">
-                      {msg.timestamp}
+                      {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
                 </div>
