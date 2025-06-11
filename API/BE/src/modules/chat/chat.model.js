@@ -1,16 +1,17 @@
 const mongoose = require('mongoose');
 
+// Chat message schema definition
 const chatMessageSchema = new mongoose.Schema({
-  conversationId: { // Link to the conversation
+  conversationId: {
     type: mongoose.Types.ObjectId,
-    ref: 'Conversation', // Reference to the Conversation model
+    ref: 'Conversation',
     required: true,
   },
-  senderId: { // The ID of the user (guestId or adminId) who sent the message
-    type: String, // Keep as String since guestId is UUID
+  senderId: {
+    type: String,
     required: true,
   },
-  senderName: { // The name of the sender
+  senderName: {
     type: String,
     required: true,
   },
@@ -18,16 +19,16 @@ const chatMessageSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  isGuest: { // True if sent by a guest, false if by an admin
+  isGuest: {
     type: Boolean,
     default: false,
   },
-  timestamp: { // Server-side timestamp for reliability
+  timestamp: {
     type: Date,
     default: Date.now,
   },
 }, {
-  timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } // Add createdAt and updatedAt
+  timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' }
 });
 
 const ChatMessage = mongoose.model('ChatMessage', chatMessageSchema);

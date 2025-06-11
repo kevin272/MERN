@@ -18,7 +18,6 @@ const conversationSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  // Add other metadata relevant to the conversation
 }, {
   timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } // Add createdAt and updatedAt
 });

@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { socket } from '../../config/chat.config'; // Import the socket configuration
-import { v4 as uuidv4 } from 'uuid'; // For generating unique guest IDs
-
-import chatService from '../../pages/chat/chat.service'; // Import the chat service for API calls
+import { socket } from '../../config/chat.config';
+import { v4 as uuidv4 } from 'uuid';
+import chatService from '../../pages/chat/chat.service';
 
 interface Message {
-  _id: string; // MongoDB document ID
+  _id: string;
   senderId: string;
   senderName: string;
   text: string;
-  timestamp: string; // Stored as ISO string, converted to readable string for display
+  timestamp: string;
   isGuest?: boolean;
 }
 
@@ -23,15 +22,15 @@ export const GuestChatPage: React.FC = () => {
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [chatError, setChatError] = useState<string | null>(null);
 
-  // Effect to generate/load guest ID and name
   useEffect(() => {
     let storedGuestId = localStorage.getItem('guestId');
     let storedGuestName = localStorage.getItem('guestName');
 
     if (!storedGuestId) {
-      storedGuestId = uuidv4(); // Generate a unique ID for the guest session
+      storedGuestId = uuidv4();
       localStorage.setItem('guestId', storedGuestId);
     }
+
     setGuestId(storedGuestId);
 
     if (storedGuestName) {
@@ -40,71 +39,56 @@ export const GuestChatPage: React.FC = () => {
     }
   }, []);
 
-  // Function to fetch messages for this guest's conversation
- const fetchGuestMessages = async (currentGuestId: string) => {
-  setLoadingMessages(true);
-  setChatError(null); // Clear previous errors
-  try {
-    const msgs = await chatService.getGuestMessagesByGuestId(currentGuestId);
-    const mappedMsgs = msgs.map((msg: any) => ({
-      ...msg,
-      timestamp: new Date(msg.timestamp).toLocaleString(),
-    }));
-    setMessages(mappedMsgs);
-    console.log(`Fetched guest messages for conversation ${currentGuestId}:`, msgs.length);
-  } catch (error: any) {
-    console.error(`Error fetching guest messages for ${currentGuestId}:`, error);
-
-    // Check if the error is a 404 specifically for "Conversation not found"
-    if (error.response && error.response.status === 404 && error.response.data.message === 'Conversation not found for this guest.') {
-      console.log('No existing conversation found, starting fresh chat.');
-      setMessages([]); // Set messages to an empty array (empty chat history)
-      setChatError(null); // Clear any error state, as this is a valid scenario
-    } else {
-      // For any other type of error (e.g., network issues, server errors), display a general error
-      setChatError(error.message || "Failed to load guest messages.");
+  const fetchGuestMessages = async (currentGuestId: string) => {
+    setLoadingMessages(true);
+    setChatError(null);
+    try {
+      const msgs = await chatService.getGuestMessagesByGuestId(currentGuestId);
+      const mappedMsgs = msgs.map((msg: any) => ({
+        ...msg,
+        timestamp: new Date(msg.timestamp).toLocaleString(),
+      }));
+      setMessages(mappedMsgs);
+    } catch (error: any) {
+      if (
+        error.response &&
+        error.response.status === 404 &&
+        error.response.data.message === 'Conversation not found for this guest.'
+      ) {
+        setMessages([]);
+      } else {
+        setChatError(error.message || 'Failed to load messages.');
+      }
+    } finally {
+      setLoadingMessages(false);
     }
-  } finally {
-    setLoadingMessages(false);
-  }
-};
+  };
 
-  // Initial fetch of guest messages and Socket.io listener for updates
   useEffect(() => {
     if (guestId && isNameSet) {
-      // Fetch initial messages for this guest
       fetchGuestMessages(guestId);
-
-      // Socket.io for real-time message updates
       socket.connect();
+
       const roomName = `guest_${guestId}`;
-      socket.emit('joinRoom', roomName, guestId); // Guest joins their unique room
+      socket.emit('joinRoom', roomName, guestId);
 
-      console.log(`FRONTEND GUEST CHAT: Guest ${guestName} (${guestId}) attempting to join room: ${roomName}`);
-
-      // Listen for notification that a new message has been added to this conversation
-      socket.on('messageUpdateNotification', (data: { conversationId: string }) => {
-        console.log("Socket: Message update notification received for conversation:", data.conversationId);
-        if (data.conversationId === guestId) { // Check if it's for this guest's chat
-          fetchGuestMessages(guestId); // Re-fetch messages
+      const handleSocketUpdate = (data: { conversationId: string }) => {
+        if (data.conversationId === guestId) {
+          fetchGuestMessages(guestId);
         }
-      });
+      };
+
+      socket.on('messageUpdateNotification', handleSocketUpdate);
 
       return () => {
-        socket.off('messageUpdateNotification');
+        socket.off('messageUpdateNotification', handleSocketUpdate);
         socket.disconnect();
       };
-    } else if (guestId && !isNameSet) {
-      // If guestId exists but name isn't set, disconnect socket to avoid unnecessary connections
-      socket.disconnect();
     }
-  }, [guestId, isNameSet, guestName]);
+  }, [guestId, isNameSet]);
 
-  // Effect to scroll to the bottom of the messages list
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   const handleSetGuestName = (e: React.FormEvent) => {
@@ -120,42 +104,52 @@ export const GuestChatPage: React.FC = () => {
     if (newMessage.trim() && guestId && isNameSet) {
       try {
         const messagePayload = {
-          guestId: guestId, // This is the conversation ID for guests
-          guestName: guestName.trim(), // Send guest name for conversation creation/update
+          guestId,
+          guestName: guestName.trim(),
           senderId: guestId,
           senderName: guestName.trim(),
           text: newMessage.trim(),
-          isGuest: true, // This message is from a guest
+          isGuest: true,
         };
 
         await chatService.sendMessage(messagePayload);
         setNewMessage('');
-        // Messages will be refreshed by the 'messageUpdateNotification' from socket
 
+        setMessages(prev => [
+          ...prev,
+          {
+            _id: `temp-${Date.now()}`,
+            senderId: guestId,
+            senderName: guestName.trim(),
+            text: messagePayload.text,
+            timestamp: new Date().toLocaleString(),
+            isGuest: true,
+          },
+        ]);
       } catch (error: any) {
-        console.error("Error sending message:", error);
-        setChatError(error.message || "Failed to send message.");
+        setChatError(error.message || 'Failed to send message.');
       }
     }
   };
 
+  // Loading or error state
   if (!isNameSet) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-800 via-emerald-600 to-green-400 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 space-y-8 text-center">
-          <h2 className="text-2xl font-bold text-emerald-800 mb-4">Enter Your Name to Start Chat</h2>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-800 via-emerald-600 to-green-400 p-4">
+        <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 text-center space-y-6">
+          <h2 className="text-2xl font-semibold text-emerald-800">Enter Your Name</h2>
           <form onSubmit={handleSetGuestName} className="space-y-4">
             <input
               type="text"
               value={guestName}
               onChange={(e) => setGuestName(e.target.value)}
-              placeholder="Your Name"
-              className="block w-full py-2 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all text-sm"
+              placeholder="Your name"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-emerald-500 focus:ring-2 outline-none"
               required
             />
             <button
               type="submit"
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg font-medium transition duration-200"
             >
               Start Chat
             </button>
@@ -168,7 +162,7 @@ export const GuestChatPage: React.FC = () => {
   if (loadingMessages) {
     return (
       <div className="flex justify-center items-center h-screen bg-gray-50">
-        <p className="text-gray-600">Loading messages...</p>
+        <span className="text-gray-600">Loading messages...</span>
       </div>
     );
   }
@@ -176,59 +170,52 @@ export const GuestChatPage: React.FC = () => {
   if (chatError) {
     return (
       <div className="flex justify-center items-center h-screen bg-red-50">
-        <p className="text-red-700 font-bold">{chatError}</p>
+        <span className="text-red-600 font-semibold">{chatError}</span>
       </div>
     );
   }
 
+  // Main chat UI
   return (
-    <div className="flex flex-col h-screen bg-gray-50 font-sans antialiased text-gray-800">
-      <div className="flex-grow flex flex-col justify-center items-center p-4">
-        <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl flex flex-col h-[80vh] md:h-[75vh] border border-gray-200 overflow-hidden">
-          {/* Chat Header */}
-          <div className="bg-emerald-700 text-white p-4 rounded-t-2xl shadow-md flex items-center justify-between">
-            <h2 className="text-xl font-bold">Guest Chat ({guestName})</h2>
-          </div>
+    <div className="flex flex-col h-screen bg-gray-50 text-gray-800 font-sans">
+      <div className="flex flex-col flex-grow items-center justify-center p-4">
+        <div className="w-full max-w-2xl h-[80vh] md:h-[75vh] flex flex-col bg-white border border-gray-200 rounded-2xl shadow-xl overflow-hidden">
+          <header className="bg-emerald-700 text-white px-6 py-4 flex justify-between items-center rounded-t-2xl">
+            <h1 className="text-lg font-semibold">Guest Chat ({guestName})</h1>
+          </header>
 
-          {/* Messages Area */}
-          <div className="flex-grow p-4 overflow-y-auto space-y-4">
+          <main className="flex-grow p-4 overflow-y-auto space-y-3">
             {messages.map((msg) => (
-              <div
-                key={msg._id} // Use MongoDB _id as key
-                className={`flex ${msg.senderId === guestId ? 'justify-end' : 'justify-start'}`}
-              >
+              <div key={msg._id} className={`flex ${msg.senderId === guestId ? 'justify-end' : 'justify-start'}`}>
                 <div
-                  className={`max-w-[70%] p-3 rounded-lg shadow-sm ${
+                  className={`rounded-xl px-4 py-2 text-sm max-w-[70%] shadow-md ${
                     msg.senderId === guestId
                       ? 'bg-emerald-500 text-white rounded-br-none'
-                      : 'bg-gray-100 text-gray-800 rounded-bl-none'
+                      : 'bg-gray-100 text-gray-900 rounded-bl-none'
                   }`}
                 >
-                  <p className="text-sm">
-                    <strong>{msg.senderName}:</strong> {msg.text}
-                  </p>
-                  <span className="text-xs opacity-75 mt-1 block text-right">
+                  <p><strong>{msg.senderName}:</strong> {msg.text}</p>
+                  <span className="block text-right text-xs opacity-60 mt-1">
                     {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
               </div>
             ))}
             <div ref={messagesEndRef} />
-          </div>
+          </main>
 
-          {/* Message Input Area */}
           <form onSubmit={handleSendMessage} className="p-4 border-t border-gray-200 bg-gray-50 rounded-b-2xl">
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center gap-3">
               <input
                 type="text"
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 placeholder="Type your message..."
-                className="flex-grow py-2 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all text-sm"
+                className="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-sm"
               />
               <button
                 type="submit"
-                className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-5 rounded-lg shadow transition-all duration-200"
               >
                 Send
               </button>
